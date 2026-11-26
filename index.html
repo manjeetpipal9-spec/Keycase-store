@@ -1,68 +1,248 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101b18">
-<title>KEYCASE.STORE — Cases made personal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KEYCASE.STORE | Premium Phone Cases</title>
+<meta name="description" content="Discover premium mobile covers and designer phone cases at KEYCASE.STORE.">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--ink:#101b18;--paper:#f6f5ef;--lime:#d6f36a;--muted:#707a73;--line:#e5e7df;--white:#fff}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
-.top{background:var(--ink);color:#fff;text-align:center;padding:9px 14px;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
-header{position:sticky;top:0;z-index:10;background:#f6f5efed;backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
-.nav{max-width:1240px;margin:auto;padding:17px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.logo{font-weight:950;letter-spacing:-.07em;font-size:24px}.logo span{color:#78912d}.links{display:flex;gap:25px;font-size:13px;font-weight:650}.actions{display:flex;gap:10px;align-items:center}.pill{border:1px solid var(--ink);border-radius:99px;padding:10px 16px;font-size:12px;font-weight:750;background:transparent}.pill.dark{background:var(--ink);color:white}.cart-count{background:var(--lime);color:var(--ink);border-radius:50%;padding:2px 7px;margin-left:4px}
-main{max-width:1240px;margin:auto;padding:0 24px}.hero{padding:42px 0 54px;display:grid;grid-template-columns:1.04fr .96fr;gap:30px;align-items:center}.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:#68734b}.hero h1{font-size:clamp(48px,7vw,88px);line-height:.92;letter-spacing:-.075em;margin:18px 0 20px;max-width:650px}.hero h1 em{font-style:normal;color:#819b36}.hero p{max-width:430px;color:#66716a;line-height:1.7;font-size:15px}.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.hero-art{min-height:460px;border-radius:28px;background:linear-gradient(145deg,#dce6c7,#a7b68d 55%,#6f8060);position:relative;overflow:hidden;display:grid;place-items:center}.orb{position:absolute;width:310px;height:310px;border-radius:50%;background:#eff3df88;filter:blur(1px);right:-50px;top:-70px}.phone{width:205px;height:390px;border:9px solid #18201d;border-radius:38px;background:linear-gradient(145deg,#e8e4d6,#a7b69a);box-shadow:0 30px 55px #1a281e55;transform:rotate(-12deg);position:relative;z-index:1}.phone:before{content:"";position:absolute;top:13px;left:13px;width:65px;height:65px;border-radius:20px;background:#25332c;box-shadow:inset 0 0 0 6px #657568}.phone:after{content:"✳";position:absolute;right:35px;bottom:75px;font-size:95px;color:#f5f3e9;opacity:.9}.float-tag{position:absolute;z-index:2;background:#fff;padding:13px 17px;border-radius:14px;font-size:11px;font-weight:800;box-shadow:0 10px 30px #1b2b1c22}.tag1{left:7%;bottom:18%}.tag2{right:7%;top:18%;background:var(--lime)}
-.trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:17px 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#59645d;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-section{padding:76px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:25px}.section-head h2{font-size:clamp(32px,4vw,48px);letter-spacing:-.06em;margin:8px 0 0}.section-head p{color:var(--muted);font-size:13px;max-width:350px;line-height:1.6}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}.filter{border:1px solid #d7dbd1;background:transparent;padding:9px 15px;border-radius:99px;font-size:12px}.filter.active{background:var(--ink);color:#fff;border-color:var(--ink)}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.product{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}.product-art{height:245px;display:grid;place-items:center;position:relative;background:linear-gradient(140deg,#e7e9df,#c7d0bd)}.product-art:before{content:"";width:112px;height:195px;border:7px solid #222c27;border-radius:25px;background:linear-gradient(145deg,#f1efe6,#a7b69b);box-shadow:0 16px 30px #18251d33;transform:rotate(9deg)}.product:nth-child(2n) .product-art{background:linear-gradient(140deg,#e9d8cf,#c8a99a)}.product:nth-child(2n) .product-art:before{background:linear-gradient(145deg,#e8b7a4,#8e625d);transform:rotate(-8deg)}.product:nth-child(3n) .product-art{background:linear-gradient(140deg,#d8dfe8,#a5b1c4)}.product:nth-child(3n) .product-art:before{background:linear-gradient(145deg,#d9e1ed,#7889a6)}.tag{position:absolute;top:13px;left:13px;background:var(--lime);border-radius:99px;padding:6px 9px;font-size:9px;font-weight:900;letter-spacing:.08em}.product-info{padding:15px}.product-info small{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.12em}.product-info h3{font-size:15px;margin:7px 0}.price{font-size:14px;font-weight:850}.price del{color:#9aa19a;font-size:11px;font-weight:500;margin-left:7px}.add{width:100%;margin-top:13px;border:0;background:var(--ink);color:white;border-radius:10px;padding:11px;font-size:11px;font-weight:800}
-.feature-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}.feature{min-height:300px;padding:30px;border-radius:22px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}.feature.dark{background:#17231e;color:white}.feature.lite{background:#dce5c9}.feature h3{font-size:38px;line-height:1;letter-spacing:-.06em;margin:12px 0}.feature p{max-width:300px;line-height:1.6;color:inherit;opacity:.72;font-size:13px}.feature a{font-weight:800;font-size:12px;border-bottom:1px solid currentColor;padding-bottom:5px;width:max-content}.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.review{padding:23px;background:white;border:1px solid var(--line);border-radius:17px}.stars{color:#849c3c;letter-spacing:3px}.review p{font-size:14px;line-height:1.7;color:#4f5b53}.review b{font-size:12px}
-.banner{background:var(--lime);border-radius:22px;padding:36px;display:flex;align-items:center;justify-content:space-between;gap:20px}.banner h2{font-size:clamp(28px,4vw,43px);letter-spacing:-.06em;margin:0}.banner p{font-size:13px;max-width:420px;line-height:1.6}
-footer{margin-top:70px;background:var(--ink);color:#fff;padding:45px 24px}.foot{max-width:1190px;margin:auto;display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}.foot p{color:#aeb8b0;font-size:12px;line-height:1.7}.foot-links{display:flex;gap:18px;align-items:center;font-size:12px}
-.notice{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:white;padding:12px 18px;border-radius:99px;font-size:12px;box-shadow:0 8px 30px #0003;display:none;z-index:20}
-@media(max-width:850px){.links{display:none}.hero{grid-template-columns:1fr;padding-top:30px}.hero-art{min-height:370px}.grid{grid-template-columns:repeat(2,1fr)}.product-art{height:210px}.reviews{grid-template-columns:1fr}.feature-row{grid-template-columns:1fr}}
-@media(max-width:480px){.nav{padding:14px 16px}main{padding:0 16px}.logo{font-size:21px}.hero h1{font-size:54px}.hero-art{min-height:330px}.phone{transform:scale(.85) rotate(-12deg)}section{padding:55px 0}.grid{gap:10px}.product-art{height:175px}.product-art:before{transform:scale(.8) rotate(9deg)}.product-info{padding:11px}.banner{padding:25px;display:block}.banner .pill{margin-top:10px}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#faf9f6;color:#171717}
+a{color:inherit;text-decoration:none}
+header{background:#fff;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;position:sticky;top:0;z-index:10}
+.logo{font-size:24px;font-weight:900;letter-spacing:2px}
+.logo span{color:#b58a50}
+.cart{border:1px solid #ddd;border-radius:30px;padding:10px 15px;font-size:14px}
+.hero{padding:25px 5%}
+.banner{height:300px;border-radius:18px;overflow:hidden;background:#222;position:relative;color:white}
+.banner img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.banner:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.6),transparent)}
+.banner-text{position:absolute;z-index:2;left:7%;top:50%;transform:translateY(-50%);max-width:70%}
+.banner-text h1{font-size:clamp(28px,5vw,48px);margin-bottom:12px}
+.banner-text p{font-size:16px}
+.dots{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%;background:#aaa}
+.dot.active{background:white}
+.intro{text-align:center;padding:30px 15px}
+.intro small{letter-spacing:3px;color:#b58a50;font-weight:bold}
+.intro h2{font-size:30px;margin:10px 0}
+.intro p{color:#777}
+.filters{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:0 15px 25px}
+.filters button{border:1px solid #ddd;background:white;padding:11px 18px;border-radius:30px;cursor:pointer}
+.filters button.active{background:#171717;color:white}
+.products{padding:0 5% 50px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.card{background:white;border-radius:14px;overflow:hidden;border:1px solid #eee}
+.product-img{height:240px;background:#f2f0ed;position:relative}
+.product-img img{width:100%;height:100%;object-fit:cover}
+.tag{position:absolute;top:12px;left:12px;background:#171717;color:white;font-size:11px;padding:6px 9px;border-radius:20px}
+.product-info{padding:15px}
+.brand{font-size:11px;color:#b58a50;font-weight:bold;text-transform:uppercase;letter-spacing:1px}
+.product-info h3{font-size:16px;margin:7px 0}
+.models{font-size:12px;color:#888;min-height:30px}
+.price{margin:12px 0;font-weight:bold;font-size:18px}
+.mrp{font-size:13px;color:#999;text-decoration:line-through;margin-left:7px;font-weight:normal}
+.add{width:100%;padding:11px;border:0;background:#171717;color:white;border-radius:8px;cursor:pointer}
+.add:hover{background:#b58a50}
+.empty{text-align:center;padding:35px;color:#777;grid-column:1/-1}
+footer{background:#171717;color:white;padding:40px 5%;text-align:center}
+footer p{color:#aaa;margin-top:10px;font-size:13px}
+.loading{text-align:center;padding:35px;color:#777}
+@media(max-width:900px){.products{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){
+ header{padding:15px 4%}.logo{font-size:20px}
+ .hero{padding:15px 4%}.banner{height:220px}
+ .banner-text h1{font-size:27px}.banner-text p{font-size:13px}
+ .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 4% 35px}
+ .product-img{height:190px}.product-info{padding:11px}
+ .product-info h3{font-size:14px}.price{font-size:16px}
+}
 </style>
 </head>
+
 <body>
-<div class="top">Free shipping on selected orders · Made for your phone</div>
-<header><nav class="nav">
-<a class="logo" href="#">KEYCASE<span>.</span>STORE</a>
-<div class="links"><a href="#shop">Shop</a><a href="#designer">Designer</a><a href="#diy">DIY Studio</a><a href="#new">New Arrivals</a><a href="#reviews">Reviews</a></div>
-<div class="actions"><a class="pill" href="#shop">Explore</a><a class="pill dark" href="#shop">Bag <span class="cart-count" id="count">0</span></a></div>
-</nav></header>
-<main>
+<header>
+  <a class="logo" href="#">KEYCASE<span>.</span>STORE</a>
+  <div class="cart">Bag: <strong id="bagCount">0</strong></div>
+</header>
+
 <section class="hero">
-<div><div class="eyebrow">Your phone. Your personality.</div><h1>Make your<br>phone feel <em>you.</em></h1><p>Discover statement-making mobile covers, clean everyday essentials and designs that feel like they were made just for you.</p><div class="hero-cta"><a class="pill dark" href="#shop">Shop the collection ↗</a><a class="pill" href="#designer">Find your style</a></div></div>
-<div class="hero-art"><div class="orb"></div><div class="phone"></div><div class="float-tag tag1">DESIGNED TO STAND OUT ✳</div><div class="float-tag tag2">NEW DROP / 2026</div></div>
+  <div class="banner" id="banner">
+    <div class="banner-text">
+      <h1>Make Your Phone<br>Look Different.</h1>
+      <p>Discover your style. Carry your personality.</p>
+    </div>
+  </div>
 </section>
-<div class="trust"><span>✳ Thoughtful designs</span><span>◈ Everyday protection</span><span>↗ Made to express you</span><span>♡ Customer-first support</span></div>
-<section id="shop"><div class="section-head"><div><div class="eyebrow">The collection</div><h2>Find your case.</h2></div><p>From crystal-clear classics to bold designs, find the look that fits your everyday.</p></div>
-<div class="filters"><button class="filter active" data-filter="all">All covers</button><button class="filter" data-filter="Crystal Clear">Crystal Clear</button><button class="filter" data-filter="Designer">Designer</button><button class="filter" data-filter="Everyday">Everyday</button></div>
-<div class="grid" id="products">
-<article class="product" data-category="Crystal Clear"><div class="product-art"><span class="tag">BESTSELLER</span></div><div class="product-info"><small>Crystal Clear</small><h3>Clear Classic Case</h3><div class="price">₹399 <del>₹999</del></div><button class="add">ADD TO BAG</button></div></article>
-<article class="product" data-category="Designer"><div class="product-art"><span class="tag">NEW</span></div><div class="product-info"><small>Designer</small><h3>Soft Blush Edition</h3><div class="price">₹599</div><button class="add">ADD TO BAG</button></div></article>
-<article class="product" data-category="Designer"><div class="product-art"></div><div class="product-info"><small>Designer</small><h3>Midnight Blue Case</h3><div class="price">₹599</div><button class="add">ADD TO BAG</button></div></article>
-<article class="product" data-category="Everyday"><div class="product-art"><span class="tag">EVERYDAY</span></div><div class="product-info"><small>Everyday</small><h3>Minimal Daily Case</h3><div class="price">₹449</div><button class="add">ADD TO BAG</button></div></article>
-</div>
+
+<section class="intro">
+  <small>THE KEYCASE COLLECTION</small>
+  <h2>Find Your Perfect Case</h2>
+  <p>Premium looks. Everyday protection.</p>
 </section>
-<section id="designer"><div class="section-head"><div><div class="eyebrow">Made to be noticed</div><h2>Pick your mood.</h2></div></div><div class="feature-row">
-<div class="feature dark"><div><div class="eyebrow" style="color:#d6f36a">01 / Designer collection</div><h3>Not just<br>a phone case.</h3><p>Express your style with standout colours, textures and designs.</p></div><a href="#shop">EXPLORE DESIGNER ↗</a></div>
-<div class="feature lite" id="diy"><div><div class="eyebrow">02 / DIY Studio</div><h3>Your idea.<br>Your case.</h3><p>A space for personal designs and custom creations. Share your idea with our team.</p></div><a href="https://wa.me/" target="_blank" rel="noopener">ASK ABOUT CUSTOM CASES ↗</a></div>
-</div></section>
-<section id="new"><div class="section-head"><div><div class="eyebrow">Just landed</div><h2>Fresh arrivals.</h2></div><p>New looks are on the way. Check back for the latest drops.</p></div><div class="banner"><div><h2>Something new is coming.</h2><p>Our New Arrivals collection will be updated with fresh designs and compatible phone models.</p></div><a class="pill dark" href="#shop">Explore covers ↗</a></div></section>
-<section id="reviews"><div class="section-head"><div><div class="eyebrow">The love is real</div><h2>Made them smile.</h2></div></div><div class="reviews">
-<div class="review"><div class="stars">★★★★★</div><p>“Looks clean, feels premium and fits my phone perfectly. Love the finish!”</p><b>— Customer review</b></div>
-<div class="review"><div class="stars">★★★★★</div><p>“Really nice design and the case looks just like I wanted. Great experience.”</p><b>— Customer review</b></div>
-<div class="review"><div class="stars">★★★★★</div><p>“A simple way to give my phone a whole new look. Will order again.”</p><b>— Customer review</b></div>
-</div></section>
-<section><div class="banner"><div><h2>Need a little help?</h2><p>Questions about a cover or phone compatibility? Contact our team for customer support.</p></div><a class="pill dark" href="https://wa.me/" target="_blank" rel="noopener">WhatsApp support ↗</a></div></section>
+
+<nav class="filters">
+  <button class="active" data-filter="all">All Products</button>
+  <button data-filter="crystal">Crystal Clear</button>
+  <button data-filter="designer">Designer</button>
+  <button data-filter="diy">DIY Studio</button>
+  <button data-filter="new">New Arrivals</button>
+</nav>
+
+<main class="products" id="products">
+  <div class="loading">Loading products...</div>
 </main>
-<footer><div class="foot"><div><a class="logo" href="#" style="color:white">KEYCASE<span>.</span>STORE</a><p>Cases made personal.<br>© 2026 KEYCASE.STORE</p></div><div class="foot-links"><a href="#shop">Shop</a><a href="#reviews">Reviews</a><a href="#designer">Designer</a></div></div></footer>
-<div class="notice" id="notice">Added to bag · Demo only</div>
+
+<footer>
+  <div class="logo">KEYCASE<span>.</span>STORE</div>
+  <p>Designed to match your style.</p>
+  <p>For customer help, contact us on WhatsApp.</p>
+  <p>© KEYCASE.STORE</p>
+</footer>
+
 <script>
-let bag=0;const count=document.getElementById('count'),notice=document.getElementById('notice');
-document.querySelectorAll('.add').forEach(b=>b.addEventListener('click',()=>{bag++;count.textContent=bag;notice.style.display='block';clearTimeout(window.noticeTimer);window.noticeTimer=setTimeout(()=>notice.style.display='none',1800)}));
-document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');const f=b.dataset.filter;document.querySelectorAll('.product').forEach(p=>p.style.display=f==='all'||p.dataset.category===f?'':'none')}));
+const SUPABASE_URL = "https://oclkptcolnvhkxzngfgn.supabase.co";
+const SUPABASE_KEY = "sb_publishable_E6UWK1IvAFXku1HaR7fj_Q_f2oTwygz";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let allProducts = [];
+let currentFilter = "all";
+let bagCount = 0;
+let banners = [];
+let bannerIndex = 0;
+
+function money(value){
+  return "₹" + Number(value || 0).toLocaleString("en-IN");
+}
+
+function safe(value){
+  return String(value || "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[char]));
+}
+
+function categoryKey(product){
+  const text = ((product.category || "") + " " + (product.section || "")).toLowerCase();
+  if(text.includes("crystal")) return "crystal";
+  if(text.includes("designer")) return "designer";
+  if(text.includes("diy")) return "diy";
+  return "other";
+}
+
+function renderProducts(){
+  const container = document.getElementById("products");
+
+  let list = allProducts.filter(p => {
+    if(currentFilter === "all") return true;
+    if(currentFilter === "new") return p.is_new_arrival === true;
+    return categoryKey(p) === currentFilter;
+  });
+
+  if(!list.length){
+    container.innerHTML = '<div class="empty">No products available in this section yet.</div>';
+    return;
+  }
+
+  container.innerHTML = list.map(p => {
+    const image = Array.isArray(p.image_urls) ? p.image_urls[0] : "";
+    const models = Array.isArray(p.compatible_models) ? p.compatible_models.join(", ") : "";
+    return `
+      <article class="card">
+        <div class="product-img">
+          ${image ? `<img src="${safe(image)}" alt="${safe(p.name)}" loading="lazy">` : ""}
+          ${p.is_new_arrival ? '<span class="tag">NEW</span>' : ""}
+        </div>
+        <div class="product-info">
+          <div class="brand">${safe(p.brand || p.category || "KEYCASE")}</div>
+          <h3>${safe(p.name)}</h3>
+          <div class="models">${safe(models)}</div>
+          <div class="price">
+            ${money(p.price)}
+            ${p.mrp && Number(p.mrp) > Number(p.price) ? `<span class="mrp">${money(p.mrp)}</span>` : ""}
+          </div>
+          <button class="add" onclick="addToBag()">ADD TO BAG</button>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+function addToBag(){
+  bagCount++;
+  document.getElementById("bagCount").textContent = bagCount;
+  alert("Added to bag. Checkout will be enabled after the order and payment system is connected.");
+}
+
+async function loadProducts(){
+  const {data, error} = await db
+    .from("products")
+    .select("id,name,brand,category,section,compatible_models,price,mrp,image_urls,is_new_arrival,is_active,sort_order")
+    .eq("is_active", true)
+    .order("sort_order", {ascending:true});
+
+  if(error){
+    document.getElementById("products").innerHTML =
+      '<div class="empty">Products could not load. Please check Supabase public access settings.</div>';
+    console.error(error);
+    return;
+  }
+
+  allProducts = data || [];
+  renderProducts();
+}
+
+async function loadBanners(){
+  const {data, error} = await db
+    .from("store_banners")
+    .select("title,subtitle,image_url,target_url,sort_order,is_active")
+    .eq("is_active", true)
+    .order("sort_order", {ascending:true});
+
+  if(error){
+    console.error("Banner error:", error);
+    return;
+  }
+
+  banners = data || [];
+  if(banners.length) showBanner(0);
+
+  if(banners.length > 1){
+    setInterval(() => {
+      bannerIndex = (bannerIndex + 1) % banners.length;
+      showBanner(bannerIndex);
+    }, 5000);
+  }
+}
+
+function showBanner(index){
+  const b = banners[index];
+  if(!b) return;
+
+  const banner = document.getElementById("banner");
+  banner.innerHTML = `
+    <img src="${safe(b.image_url)}" alt="${safe(b.title)}">
+    <div class="banner-text">
+      <h1>${safe(b.title || "Discover Your Style")}</h1>
+      <p>${safe(b.subtitle || "Explore the KEYCASE collection")}</p>
+    </div>
+    <div class="dots">
+      ${banners.map((_,i)=>`<span class="dot ${i===index?'active':''}"></span>`).join("")}
+    </div>`;
+}
+
+document.querySelectorAll(".filters button").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+    currentFilter = button.dataset.filter;
+    renderProducts();
+  });
+});
+
+loadProducts();
+loadBanners();
 </script>
 </body>
 </html>
