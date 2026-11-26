@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KEYCASE.STORE — Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f5f6fa;--card:#fff;--ink:#171923;--muted:#687083;--line:#e5e7ef;--accent:#171923;--danger:#b42318;--ok:#087443}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:#111827;color:#fff;padding:17px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+header strong{letter-spacing:.08em}main{max-width:1100px;margin:24px auto;padding:0 14px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 4px 18px #11182708}
+h1{font-size:22px;margin:0 0 5px}h2{font-size:18px;margin:0 0 14px}.muted{color:var(--muted);font-size:13px}
+label{display:block;font-size:13px;font-weight:650;margin:10px 0 5px}input,textarea,select{width:100%;border:1px solid #d7dbe5;border-radius:9px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:82px;resize:vertical}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.checks{display:flex;flex-wrap:wrap;gap:16px;margin:12px 0}.checks label{display:flex;align-items:center;gap:7px;margin:0;font-weight:500}.checks input{width:auto}
+button{border:0;border-radius:10px;padding:11px 15px;font:600 14px system-ui;cursor:pointer;background:#171923;color:#fff}
+button.secondary{background:#eef0f5;color:#202433}button.danger{background:#fff0ef;color:var(--danger)}button:disabled{opacity:.55;cursor:wait}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.hidden{display:none!important}
+.notice{padding:11px 13px;border-radius:10px;background:#f0f4ff;color:#263a70;margin:12px 0;font-size:13px;white-space:pre-wrap}.notice.error{background:#fff0ef;color:#9c251d}.notice.success{background:#eaf8f0;color:#08633a}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}th{color:var(--muted)}.tablewrap{overflow:auto}
+.thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;background:#eee}.rowtitle{font-weight:650}.pill{font-size:11px;padding:3px 7px;border-radius:20px;background:#eef0f5}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+@media(max-width:650px){.grid{grid-template-columns:1fr}main{margin:14px auto}header{padding:14px}.card{padding:14px}th,td{padding:8px 6px}}
+</style>
+</head>
+<body>
+<header><strong>KEYCASE.STORE <span style="font-weight:400;opacity:.7">/ ADMIN</span></strong><button id="logoutBtn" class="secondary hidden">Logout</button></header>
+<main>
+<section id="loginCard" class="card">
+<h1>Admin Login</h1><p class="muted">अपने नए Supabase प्रोजेक्ट वाले Admin ईमेल और पासवर्ड से लॉगिन करें।</p>
+<form id="loginForm">
+<label>Email</label><input id="email" type="email" autocomplete="username" required>
+<label>Password</label><input id="password" type="password" autocomplete="current-password" required>
+<div class="actions"><button id="loginBtn" type="submit">Login</button></div>
+</form><div id="loginMsg" class="notice hidden"></div>
+</section>
+
+<section id="dashboard" class="hidden">
+<div class="card">
+<div class="topline"><div><h1>Admin Dashboard</h1><div class="muted" id="adminEmail"></div></div><button id="newProductBtn">+ नया Product</button></div>
+<div id="appMsg" class="notice hidden"></div>
+</div>
+<div class="card" id="productFormCard">
+<h2 id="formHeading">Product जोड़ें</h2>
+<form id="productForm">
+<input type="hidden" id="productId">
+<div class="grid">
+<div><label>Product / Cover का नाम *</label><input id="name" required maxlength="180"></div>
+<div><label>SKU</label><input id="sku" maxlength="100"></div>
+<div><label>Brand</label><input id="brand" placeholder="Apple, Samsung, Vivo..."></div>
+<div><label>Category / Cover Type</label><input id="category" placeholder="Crystal Clear, Designer..."></div>
+<div><label>Section</label><select id="section"><option>Crystal Clear</option><option>Designer</option><option>DIY Studio</option><option>New Arrivals</option></select></div>
+<div><label>Compatible Phone Models</label><input id="models" placeholder="iPhone 16, iPhone 16 Pro (comma separated)"></div>
+<div><label>Selling Price (₹) *</label><input id="price" type="number" min="0" step="0.01" required></div>
+<div><label>MRP (₹)</label><input id="mrp" type="number" min="0" step="0.01"></div>
+<div><label>Stock Quantity</label><input id="stock" type="number" min="0" step="1" value="0"></div>
+<div><label>Display Order</label><input id="sort" type="number" step="1" value="0"></div>
+</div>
+<label>Description</label><textarea id="description"></textarea>
+<label>Product Photos (एक साथ कई चुन सकते हैं)</label><input id="photos" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple>
+<p class="muted">फोटो public bucket <b>keycase-media</b> में अपलोड होंगी। मौजूदा फोटो URL बदलने के लिए नीचे URL सूची में बदलाव करें।</p>
+<label>Existing Image URLs (हर लाइन में एक URL)</label><textarea id="imageUrls" placeholder="https://..."></textarea>
+<label>Video URL (optional)</label><input id="video" type="url" placeholder="https://...">
+<div class="checks">
+<label><input id="active" type="checkbox" checked> Published / Active</label>
+<label><input id="featured" type="checkbox"> Featured</label>
+<label><input id="newArrival" type="checkbox"> New Arrival</label>
+</div>
+<div class="actions"><button id="saveBtn" type="submit">Product Save करें</button><button type="button" class="secondary" id="cancelBtn">Clear</button></div>
+</form>
+</div>
+<div class="card">
+<div class="topline"><h2>Products</h2><button id="refreshBtn" class="secondary">Refresh</button></div>
+<div class="tablewrap"><table><thead><tr><th>Photo</th><th>Product</th><th>Section</th><th>Price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead><tbody id="productsBody"><tr><td colspan="7">Loading...</td></tr></tbody></table></div>
+</div>
+<div class="card">
+<h2>Homepage Banners</h2>
+<p class="muted">Slider की तस्वीरें यहाँ जोड़ें। कम से कम 8–10 तक सीमित नहीं है; आप जरूरत के अनुसार कई banners जोड़ सकते हैं।</p>
+<form id="bannerForm">
+<div class="grid">
+<div><label>Banner Title</label><input id="bannerTitle"></div>
+<div><label>Subtitle</label><input id="bannerSubtitle"></div>
+<div><label>Banner Image *</label><input id="bannerFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif" required></div>
+<div><label>Target URL (optional)</label><input id="bannerTarget" type="url"></div>
+<div><label>Display Order</label><input id="bannerSort" type="number" value="0"></div>
+</div>
+<div class="checks"><label><input id="bannerActive" type="checkbox" checked> Publish Banner</label></div>
+<div class="actions"><button id="bannerSaveBtn" type="submit">Banner Upload करें</button></div>
+</form>
+<div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Status</th><th>Action</th></tr></thead><tbody id="bannersBody"><tr><td colspan="5">Loading...</td></tr></tbody></table></div>
+</div>
+</section>
+</main>
+<script>
+(() => {
+const SUPABASE_URL = "https://oclkptcolnvhkxzngfgn.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_E6UWK1IvAFXku1HaR7fj_Q_f2oTwygz";
+const BUCKET = "keycase-media";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const $ = id => document.getElementById(id);
+const show = (el, yes=true) => el.classList.toggle("hidden", !yes);
+function message(id, text, type="") { const el=$(id); el.textContent=text; el.className="notice"+(type?" "+type:""); show(el,true); }
+function appMessage(text,type=""){message("appMsg",text,type)}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function money(v){return "₹"+Number(v||0).toLocaleString("en-IN")}
+async function isAdmin(user){
+ const {data,error}=await db.from("admin_users").select("role,is_active").eq("user_id",user.id).maybeSingle();
+ if(error) throw new Error("Admin permission जाँच नहीं हो पाई: "+error.message);
+ if(!data || data.role!=="admin" || data.is_active!==true) throw new Error("इस Supabase account को active admin अनुमति नहीं मिली है।");
+}
+async function uploadFile(file,folder){
+ if(!file) return null;
+ const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
+ const path=folder+"/"+Date.now()+"-"+crypto.randomUUID()+"."+ext;
+ const {error}=await db.storage.from(BUCKET).upload(path,file,{upsert:false,contentType:file.type||"application/octet-stream"});
+ if(error) throw new Error("फोटो अपलोड नहीं हुई: "+error.message);
+ const {data}=db.storage.from(BUCKET).getPublicUrl(path);
+ return data.publicUrl;
+}
+async function enter(user){
+ await isAdmin(user);
+ $("adminEmail").textContent=user.email||"Admin";
+ show($("loginCard"),false);show($("dashboard"),true);show($("logoutBtn"),true);
+ await Promise.all([loadProducts(),loadBanners()]);
+}
+async function loadProducts(){
+ const {data,error}=await db.from("products").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:false});
+ if(error){appMessage("Products लोड नहीं हुए: "+error.message,"error");return}
+ $("productsBody").innerHTML=data.length?data.map(p=>`<tr>
+ <td>${p.image_urls?.[0]?`<img class="thumb" src="${esc(p.image_urls[0])}" alt="">`:"—"}</td>
+ <td><div class="rowtitle">${esc(p.name)}</div><div class="muted">${esc(p.brand||"")}${p.sku?" · "+esc(p.sku):""}</div></td>
+ <td>${esc(p.section||"")}</td><td>${money(p.price)}</td><td>${Number(p.stock_quantity||0)}</td>
+ <td><span class="pill">${p.is_active?"Published":"Hidden"}</span></td>
+ <td><div class="actions"><button class="secondary" data-edit="${p.id}">Edit</button><button class="danger" data-delete="${p.id}">Delete</button></div></td></tr>`).join(""):'<tr><td colspan="7">अभी कोई product नहीं है।</td></tr>';
+ $("productsBody").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editProduct(data.find(p=>p.id===b.dataset.edit)));
+ $("productsBody").querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteProduct(b.dataset.delete));
+}
+function editProduct(p){
+ $("productId").value=p.id;$("name").value=p.name||"";$("sku").value=p.sku||"";
+ $("brand").value=p.brand||"";$("category").value=p.category||"";$("section").value=p.section||"New Arrivals";
+ $("models").value=(p.compatible_models||[]).join(", ");$("price").value=p.price??"";
+ $("mrp").value=p.mrp??"";$("stock").value=p.stock_quantity??0;$("sort").value=p.sort_order??0;
+ $("description").value=p.description||"";$("imageUrls").value=(p.image_urls||[]).join("\n");
+ $("video").value=p.video_url||"";$("active").checked=!!p.is_active;$("featured").checked=!!p.is_featured;
+ $("newArrival").checked=!!p.is_new_arrival;$("formHeading").textContent="Product Edit करें";
+ $("productFormCard").scrollIntoView({behavior:"smooth"});
+}
+function clearForm(){
+ $("productForm").reset();$("productId").value="";$("stock").value=0;$("sort").value=0;
+ $("active").checked=true;$("formHeading").textContent="Product जोड़ें";
+}
+async function deleteProduct(id){
+ if(!confirm("क्या आप यह product delete करना चाहते हैं?"))return;
+ const {error}=await db.from("products").delete().eq("id",id);
+ if(error){appMessage("Delete नहीं हुआ: "+error.message,"error");return}
+ appMessage("Product delete हो गया।","success");await loadProducts();
+}
+$("productForm").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=$("saveBtn");btn.disabled=true;
+ try{
+  let urls=$("imageUrls").value.split(/\n/).map(x=>x.trim()).filter(Boolean);
+  for(const file of $("photos").files){const url=await uploadFile(file,"products");if(url)urls.push(url)}
+  const id=$("productId").value;
+  const payload={
+   name:$("name").value.trim(),sku:$("sku").value.trim()||null,brand:$("brand").value.trim()||null,
+   category:$("category").value.trim()||null,section:$("section").value,
+   compatible_models:$("models").value.split(",").map(x=>x.trim()).filter(Boolean),
+   price:Number($("price").value),mrp:$("mrp").value===""?null:Number($("mrp").value),
+   stock_quantity:Math.max(0,Number($("stock").value||0)),sort_order:Number($("sort").value||0),
+   description:$("description").value.trim()||null,image_urls:urls,video_url:$("video").value.trim()||null,
+   is_active:$("active").checked,is_featured:$("featured").checked,is_new_arrival:$("newArrival").checked,
+   updated_at:new Date().toISOString()
+  };
+  if(!payload.name || !Number.isFinite(payload.price) || payload.price<0)throw new Error("Product name और सही price भरें।");
+  const {data:userData}=await db.auth.getUser();payload.updated_by=userData.user?.id||null;
+  const result=id?await db.from("products").update(payload).eq("id",id):await db.from("products").insert(payload);
+  if(result.error)throw result.error;
+  clearForm();appMessage("Product सफलतापूर्वक save हो गया।","success");await loadProducts();
+ }catch(err){appMessage(err.message||String(err),"error")}
+ finally{btn.disabled=false}
+});
+async function loadBanners(){
+ const {data,error}=await db.from("store_banners").select("*").order("sort_order",{ascending:true});
+ if(error){$("bannersBody").innerHTML=`<tr><td colspan="5">Banners नहीं लोड हुए: ${esc(error.message)}</td></tr>`;return}
+ $("bannersBody").innerHTML=data.length?data.map(b=>`<tr><td><img class="thumb" src="${esc(b.image_url)}" alt=""></td><td>${esc(b.title||"")}</td><td>${b.sort_order}</td><td>${b.is_active?"Published":"Hidden"}</td><td><button class="danger" data-bdel="${b.id}">Delete</button></td></tr>`).join(""):'<tr><td colspan="5">अभी कोई banner नहीं है।</td></tr>';
+ $("bannersBody").querySelectorAll("[data-bdel]").forEach(btn=>btn.onclick=()=>deleteBanner(btn.dataset.bdel));
+}
+$("bannerForm").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=$("bannerSaveBtn");btn.disabled=true;
+ try{
+  const file=$("bannerFile").files[0];if(!file)throw new Error("Banner image चुनें।");
+  const url=await uploadFile(file,"banners");
+  const {error}=await db.from("store_banners").insert({
+   title:$("bannerTitle").value.trim()||null,subtitle:$("bannerSubtitle").value.trim()||null,
+   image_url:url,target_url:$("bannerTarget").value.trim()||null,
+   sort_order:Number($("bannerSort").value||0),is_active:$("bannerActive").checked
+  });
+  if(error)throw error;
+  $("bannerForm").reset();$("bannerSort").value=0;$("bannerActive").checked=true;
+  appMessage("Banner upload और save हो गया।","success");await loadBanners();
+ }catch(err){appMessage(err.message||String(err),"error")}
+ finally{btn.disabled=false}
+});
+async function deleteBanner(id){
+ if(!confirm("यह banner हटाना है?"))return;
+ const {error}=await db.from("store_banners").delete().eq("id",id);
+ if(error){appMessage("Banner delete नहीं हुआ: "+error.message,"error");return}
+ appMessage("Banner delete हो गया।","success");await loadBanners();
+}
+$("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=$("loginBtn");btn.disabled=true;
+ try{
+  const {data,error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+  if(error)throw error;await enter(data.user);
+ }catch(err){message("loginMsg",err.message||String(err),"error")}
+ finally{btn.disabled=false}
+});
+$("logoutBtn").onclick=async()=>{await db.auth.signOut();show($("dashboard"),false);show($("loginCard"),true);show($("logoutBtn"),false)};
+$("newProductBtn").onclick=()=>{clearForm();$("productFormCard").scrollIntoView({behavior:"smooth"})};
+$("cancelBtn").onclick=clearForm;$("refreshBtn").onclick=()=>{loadProducts();loadBanners()};
+(async()=>{
+ const {data:{session}}=await db.auth.getSession();
+ if(session?.user){try{await enter(session.user)}catch(err){await db.auth.signOut();message("loginMsg",err.message,"error")}}
+})();
+})();
+</script>
+</body>
+</html>
