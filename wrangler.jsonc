@@ -1,8 +1,9 @@
-
 {
   "name": "keycase-store",
+  "main": "worker.js",
   "compatibility_date": "2026-11-27",
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS"
   }
 }
