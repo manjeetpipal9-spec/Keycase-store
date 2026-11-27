@@ -1,5 +1,4 @@
-
-name: Deploy KEYCASE.STORE to Cloudflare Pages
+name: Deploy KEYCASE.STORE to Cloudflare Worker
 
 on:
   push:
@@ -10,16 +9,15 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Worker
         uses: cloudflare/wrangler-action@v3
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=keycase-store
+          command: deploy
           
