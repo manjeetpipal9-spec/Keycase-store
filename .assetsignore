@@ -1,0 +1,8 @@
+**/node_modules
+**/.git
+**/.github
+**/.wrangler
+worker.js
+wrangler.jsonc
+package.json
+package-lock.json
