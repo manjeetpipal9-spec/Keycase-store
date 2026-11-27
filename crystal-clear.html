@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KEYCASE.STORE | Premium Phone Covers</title>
+<meta name="description" content="Shop Crystal Clear, Mag and Designer phone cases at KEYCASE.STORE.">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f7f4ee;--ink:#191714;--gold:#b9955b;--line:#e6dfd4;--muted:#777}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px Arial,sans-serif}
+a{color:inherit;text-decoration:none}button{cursor:pointer;font:inherit}
+.announcement{background:#171512;color:white;text-align:center;padding:10px;font-size:11px;letter-spacing:1.5px}
+header{position:sticky;top:0;z-index:10;background:white;border-bottom:1px solid var(--line);padding:16px 5%;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.logo{font-weight:900;font-size:21px;letter-spacing:2px}.logo span{color:var(--gold)}
+nav{display:flex;gap:22px;font-size:11px;text-transform:uppercase;letter-spacing:1px}
+nav a:hover{color:var(--gold)}.head-actions{display:flex;gap:8px}
+.btn{border:0;background:#191714;color:white;padding:12px 18px;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.btn.gold{background:var(--gold);color:#191714}.btn.outline{background:white;color:#191714;border:1px solid var(--line)}
+.hero{margin:22px 5% 0;min-height:410px;background:linear-gradient(100deg,#211d18,#78654c);color:white;display:flex;align-items:center;padding:6%;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0009,transparent)}
+.hero-content{position:relative;z-index:1;max-width:550px}.eyebrow{color:#d8bd91;font-size:10px;letter-spacing:3px;text-transform:uppercase}
+h1{font:normal clamp(38px,6vw,68px)/1.05 Georgia,serif;margin:16px 0}
+.hero p{line-height:1.8;color:#eee;max-width:430px;font-size:14px}
+.trust{display:grid;grid-template-columns:repeat(3,1fr);padding:25px 5%;text-align:center;border-bottom:1px solid var(--line)}
+.trust strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px}.trust span{display:block;color:var(--muted);font-size:11px;margin-top:7px}
+section{padding:45px 5%}.section-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:22px}
+h2{font:normal 34px Georgia,serif;margin:0}.section-title p{font-size:12px;color:var(--muted);margin:8px 0 0}
+.categories{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.category{min-height:190px;padding:22px;display:flex;align-items:end;color:white;background:linear-gradient(135deg,#b8a88f,#51463a);position:relative}
+.category:nth-child(2){background:linear-gradient(135deg,#b7a3a0,#4b3b3b)}
+.category:nth-child(3){background:linear-gradient(135deg,#c5c0b4,#5c5549)}
+.category h3{font:normal 27px Georgia,serif;margin:7px 0}.category small{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#f0d8b4}
+.category a{font-size:10px;border-bottom:1px solid white;padding-bottom:4px}
+.products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.card{background:white;border:1px solid var(--line);min-width:0}
+.photo{height:250px;background:#eee;position:relative}.photo img{width:100%;height:100%;object-fit:cover}
+.info{padding:13px}.brand{font-size:9px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase}
+.info h3{font-size:14px;margin:8px 0}.models{font-size:10px;color:var(--muted);line-height:1.5;min-height:25px}
+.price{font-weight:bold;margin:12px 0}.mrp{font-size:11px;color:#999;text-decoration:line-through;margin-left:7px;font-weight:normal}
+.add{width:100%;border:0;background:#191714;color:white;padding:11px;font-size:10px;letter-spacing:1px}
+.add:hover{background:var(--gold);color:#191714}
+.empty{grid-column:1/-1;padding:30px;text-align:center;color:var(--muted);background:white;border:1px dashed var(--line)}
+.mag-banner{background:#211e19;color:white;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.mag-banner p{color:#ccc;font-size:13px;line-height:1.7;max-width:560px}
+footer{background:#111;color:white;padding:35px 5%;font-size:12px}
+footer p{color:#aaa;line-height:1.8}.footer-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.bag{position:fixed;right:15px;top:85px;width:min(350px,calc(100% - 30px));background:white;border:1px solid var(--line);padding:18px;z-index:30;box-shadow:0 12px 35px #0002;display:none}
+.bag.open{display:block}.bagline{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px}
+.bag p{font-size:11px;color:var(--muted);line-height:1.6}
+@media(max-width:900px){.products{grid-template-columns:repeat(3,1fr)}nav{gap:12px}}
+@media(max-width:650px){header{padding:13px 4%;flex-wrap:wrap}.logo{font-size:18px}nav{order:3;width:100%;justify-content:space-between;gap:8px;font-size:9px}.head-actions .btn{padding:10px}.hero{margin:12px 4% 0;min-height:340px;padding:7%}.trust{padding:18px 3%;gap:5px}.trust strong{font-size:9px}.trust span{font-size:9px}.categories{grid-template-columns:1fr}.category{min-height:145px}section{padding:35px 4%}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.photo{height:185px}.info{padding:10px}.info h3{font-size:12px}.price{font-size:14px}.add{padding:10px 4px;font-size:9px}h2{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="announcement">PREMIUM PHONE CASES · MADE TO MATCH YOUR STYLE</div>
+<header>
+<a class="logo" href="index.html">KEYCASE<span>.</span>STORE</a>
+<nav>
+<a href="#collections">Collections</a>
+<a href="#crystal">Crystal Clear</a>
+<a href="#designer">Designer</a>
+<a href="#new-arrivals">New Arrivals</a>
+<a href="crystal-clear.html">Crystal Clear with Mag</a>
+</nav>
+<div class="head-actions">
+<a class="btn outline" href="admin.html">Admin</a>
+<button class="btn" id="bagButton">Bag (<span id="bagCount">0</span>)</button>
+</div>
+</header>
+
+<div class="hero">
+<div class="hero-content">
+<div class="eyebrow">THE KEYCASE EDIT</div>
+<h1>Your phone.<br>Your signature style.</h1>
+<p>Discover thoughtfully selected covers that bring together everyday protection and personal style.</p>
+<a class="btn gold" href="#collections">Explore Collection</a>
+</div>
+</div>
+
+<div class="trust">
+<div><strong>Style-led designs</strong><span>Find a look that feels like you</span></div>
+<div><strong>Made for your model</strong><span>Check phone compatibility</span></div>
+<div><strong>Customer support</strong><span>We're here to help</span></div>
+</div>
+
+<section id="collections">
+<div class="section-title"><div><h2>Explore Collections</h2><p>Find a case that fits your phone and your style.</p></div></div>
+<div class="categories">
+<div class="category"><div><small>Everyday essentials</small><h3>Crystal Clear</h3><a href="#crystal">SHOP COLLECTION</a></div></div>
+<div class="category"><div><small>Make a statement</small><h3>Designer Cases</h3><a href="#designer">DISCOVER DESIGNS</a></div></div>
+<div class="category"><div><small>Magnetic style</small><h3>Crystal Clear with Mag</h3><a href="crystal-clear.html">FIND YOUR MODEL</a></div></div>
+</div>
+</section>
+
+<section id="crystal">
+<div class="section-title"><div><h2>Crystal Clear</h2><p>Clean looks for everyday protection.</p></div></div>
+<div class="products" id="crystalProducts"><div class="empty">Loading products…</div></div>
+</section>
+
+<section id="designer">
+<div class="section-title"><div><h2>Designer Collection</h2><p>Distinctive designs to express your style.</p></div></div>
+<div class="products" id="designerProducts"><div class="empty">Loading products…</div></div>
+</section>
+
+<section class="mag-banner">
+<div><div class="eyebrow">MAGNETIC COLLECTION</div><h2>Crystal Clear with Mag</h2><p>Find the magnetic Crystal Clear cover made for your phone model. Browse compatible models and available designs.</p></div>
+<a class="btn gold" href="crystal-clear.html">Select Phone Model</a>
+</section>
+
+<section id="new-arrivals">
+<div class="section-title"><div><h2>New Arrivals</h2><p>Fresh additions to KEYCASE.STORE.</p></div></div>
+<div class="products" id="newProducts"><div class="empty">Loading new arrivals…</div></div>
+</section>
+
+<div class="bag" id="bagPanel">
+<div class="section-title"><strong>Your Bag</strong><button class="btn outline" id="closeBag">Close</button></div>
+<div id="bagItems">Your bag is empty.</div>
+<p>Items are stored in this browser session. Secure checkout and Cashfree payment require the connected server-side order/payment backend.</p>
+</div>
+
+<footer><div class="footer-row"><div><div class="logo">KEYCASE<span>.</span>STORE</div><p>Premium phone covers for your everyday.</p></div><div><strong>NEED HELP?</strong><p>Contact KEYCASE customer support for product<br>compatibility and order assistance.</p></div></div><hr><p>© <span id="year"></span> KEYCASE.STORE. All rights reserved.</p></footer>
+
+<script>
+const SUPABASE_URL="https://oclkptcolnvhkxzngfgn.supabase.co";
+const SUPABASE_KEY="sb_publishable_E6UWK1IvAFXku1HaR7fj_Q_f2oTwygz";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+let products=[],bag=[];
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=v=>"₹"+Number(v||0).toLocaleString("en-IN");
+const section=p=>String(p.section||p.category||"").toLowerCase();
+function card(p){
+const image=Array.isArray(p.image_urls)?p.image_urls[0]:"";
+const models=Array.isArray(p.compatible_models)?p.compatible_models.join(", "):"";
+return `<article class="card"><div class="photo">${image?`<img src="${esc(image)}" alt="${esc(p.name)}" loading="lazy">`:""}</div><div class="info"><div class="brand">${esc(p.brand||"KEYCASE")}</div><h3>${esc(p.name)}</h3><div class="models">${esc(models)}</div><div class="price">${money(p.price)} ${p.mrp&&Number(p.mrp)>Number(p.price)?`<span class="mrp">${money(p.mrp)}</span>`:""}</div><button class="add" data-add="${esc(p.id)}">ADD TO BAG</button></div></article>`;
+}
+function render(id,list,msg){$(id).innerHTML=list.length?list.map(card).join(""):`<div class="empty">${msg}</div>`}
+async function load(){
+const {data,error}=await db.from("products").select("id,name,brand,category,section,compatible_models,description,price,mrp,image_urls,is_new_arrival,is_active,sort_order").eq("is_active",true).order("sort_order",{ascending:true});
+if(error){["crystalProducts","designerProducts","newProducts"].forEach(id=>$(id).innerHTML='<div class="empty">Products अभी load नहीं हो पाए। कृपया बाद में कोशिश करें।</div>');console.error(error);return}
+products=data||[];
+render("crystalProducts",products.filter(p=>section(p).includes("crystal")&&!section(p).includes("mag")),"Crystal Clear products Admin में publish होने पर दिखेंगे।");
+render("designerProducts",products.filter(p=>section(p).includes("designer")),"Designer products Admin में publish होने पर दिखेंगे।");
+render("newProducts",products.filter(p=>p.is_new_arrival===true||section(p).includes("new arrival")),"New Arrivals जल्द दिखाई देंगे।");
+}
+function updateBag(){
+$("bagCount").textContent=bag.reduce((n,x)=>n+x.qty,0);
+$("bagItems").innerHTML=bag.length?bag.map(x=>`<div class="bagline"><span>${esc(x.name)} × ${x.qty}</span><strong>${money(x.price*x.qty)}</strong></div>`).join(""):"Your bag is empty.";
+}
+document.addEventListener("click",e=>{
+const b=e.target.closest("[data-add]");if(!b)return;
+const p=products.find(x=>String(x.id)===b.dataset.add);if(!p)return;
+const item=bag.find(x=>String(x.id)===String(p.id));
+if(item)item.qty++;else bag.push({id:p.id,name:p.name,price:Number(p.price)||0,qty:1});
+updateBag();$("bagPanel").classList.add("open");
+});
+$("bagButton").onclick=()=>$("bagPanel").classList.toggle("open");
+$("closeBag").onclick=()=>$("bagPanel").classList.remove("open");
+$("year").textContent=new Date().getFullYear();
+load();updateBag();
+</script>
+</body>
+</html>
