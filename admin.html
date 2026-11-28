@@ -49,9 +49,11 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <div class="tabs">
 <button class="active" data-tab="products">Products</button>
 <button data-tab="categories">Categories</button>
-<button data-tab="banners">Top + Bottom Sliders</button>
-
+<button data-tab="banners">Homepage Slider</button>
+<button data-tab="collections">Designer / New Arrivals / DIY</button>
+<button data-tab="offers">Offers & Discounts</button>
 <button data-tab="orders">Orders</button>
+<button data-tab="customers">Customers</button>
 <button data-tab="reviews">Reviews</button>
 </div>
 </div>
@@ -62,19 +64,24 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <form id="productForm">
 <input type="hidden" id="productId">
 <div class="grid">
-<div><label>Product / Cover Name *</label><input id="pName" required></div><div><label>Color Name *</label><input id="pColor" placeholder="Black, Blue, Pink..."></div><input type="hidden" id="pDesignGroup"><div><label>Main Design Photo</label><label style="display:flex;align-items:center;gap:8px;font-weight:500"><input id="pPrimary" type="checkbox" checked disabled style="width:auto"> This is the main photo shown in New Arrivals</label></div>
+<div><label>Product / Cover Name *</label><input id="pName" required></div>
 <div><label>SKU</label><input id="pSku"></div>
 <div><label>Phone Brand</label><input id="pBrand" placeholder="Apple, Samsung, Vivo..."></div>
 <div><label>Category / Cover Type</label><input id="pCategory" placeholder="Crystal Clear, Designer..."></div>
-<div><label>Section</label><select id="pSection"><option>Crystal Clear</option><option>Crystal Clear with Mag</option><option>Designer</option><option>New Arrivals</option><option>Premium</option></select></div><div><label>Crystal Clear Type</label><select id="pMagSafe"><option value="">Not applicable</option><option value="without_mag">Without Mag</option><option value="with_mag">With Mag / MagSafe</option></select></div>
-<div><label>Compatible Phone Models (comma separated)</label><input id="pModels" placeholder="iPhone 16, iPhone 16 Pro"></div><div class="muted" style="grid-column:1/-1">Crystal Clear के लिए हर phone model और Mag option (With Mag / Without Mag) का अलग product record बनाएं। उदाहरण: Brand = Apple, Model = iPhone 16 Pro, Crystal Clear Type = Without Mag. इससे ग्राहक अपने exact model के अनुसार cover चुन पाएगा।</div>
+<div><label>Section</label><select id="pSection"><option>Crystal Clear</option><option>Crystal Clear with Mag</option><option>Designer</option><option>New Arrivals</option><option>DIY</option></select></div>
+<div><label>Existing Design चुनें (नया रंग जोड़ने के लिए)</label><select id="pDesignPreset"><option value="">New design / कोई नहीं</option></select><div class="muted">पहले से बने Designer design में नया colour जोड़ने के लिए यहाँ design चुनें।</div></div>
+<div><label>Design Group ID (same for all colours)</label><input id="pDesignGroup" placeholder="पहले variant पर auto-generate होगा"></div>
+<div><label>Colour / Variant Name</label><input id="pVariantColor" placeholder="Black, Blue, Transparent..."></div>
+<div><label>Compatible Phone Models (comma separated)</label><input id="pModels" placeholder="iPhone 16, iPhone 16 Pro"></div>
 <div><label>Selling Price ₹ *</label><input id="pPrice" type="number" min="0" step=".01" required></div>
 <div><label>MRP ₹</label><input id="pMrp" type="number" min="0" step=".01"></div>
 <div><label>Stock Quantity</label><input id="pStock" type="number" min="0" value="0"></div>
 <div><label>Display Order</label><input id="pSort" type="number" value="0"></div>
 </div>
 <label>Description</label><textarea id="pDescription"></textarea>
-<label>Upload Photo for This Color *</label><input id="pFiles" type="file" accept="image/*">
+<label>Upload Multiple Product Photos</label><input id="pFiles" type="file" accept="image/*" multiple>
+<div class="checks"><label><input id="pPrimaryVariant" type="checkbox" checked> This is the featured / best-colour cover</label></div>
+<div class="muted">एक design के सभी colour variants में वही Design Group ID रखें। हर colour को अलग product/price/photo के रूप में save करें।</div>
 <label>Existing Image URLs (one URL per line)</label><textarea id="pImageUrls" placeholder="https://..."></textarea>
 <label>Product Video URL (optional)</label><input id="pVideo" type="url">
 <div class="checks">
@@ -82,10 +89,10 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <label><input id="pFeatured" type="checkbox"> Featured</label>
 <label><input id="pNew" type="checkbox"> New Arrival</label>
 </div>
-<div class="actions"><button id="saveProductBtn">Save Product</button><button type="button" class="secondary hidden" id="addColorVariant">＋ Add another color to this design</button><button type="button" class="secondary" id="clearProduct">Clear</button></div><p class="muted">हर रंग के लिए अलग फोटो और अलग product variant सेव होगा। पहले Main Design Photo सेव करें, फिर Edit खोलकर “Add another color” दबाएँ।</p>
+<div class="actions"><button id="saveProductBtn">Save Product</button><button type="button" class="secondary" id="clearProduct">Clear</button></div>
 </form>
 </div>
-<div class="card"><h2>All Products</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Name / Color</th><th>Section</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div></div>
+<div class="card"><h2>All Products</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Name / Brand</th><th>Section</th><th>Colour / Design Group</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div></div>
 </section>
 
 <section id="tab-categories" class="panel">
@@ -94,25 +101,40 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <div class="grid"><div><label>Category Name *</label><input id="cName" required></div><div><label>Slug (blank = automatic)</label><input id="cSlug"></div><div><label>Display Order</label><input id="cSort" type="number" value="0"></div><div><label>Category Image (optional)</label><input id="cFile" type="file" accept="image/*"></div></div>
 <label>Description</label><textarea id="cDescription"></textarea><div class="checks"><label><input id="cActive" type="checkbox" checked> Active</label></div>
 <div class="actions"><button>Save Category</button><button type="button" class="secondary" id="clearCategory">Clear</button></div></form></div>
-<div class="card"><h2>Categories</h2><p class="muted">होमपेज के चार swipe folders के लिए यहाँ category image upload करें: Crystal Clear Case, New Arrival, Designer और Premium. नाम सही रखें; ये चारों अलग-अलग horizontal cards में दिखेंगे।</p><div class="tablewrap"><table><thead><tr><th>Name</th><th>Slug</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody id="categoriesList"></tbody></table></div></div>
+<div class="card"><h2>Categories</h2><div class="tablewrap"><table><thead><tr><th>Name</th><th>Slug</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody id="categoriesList"></tbody></table></div></div>
 </section>
 
 <section id="tab-banners" class="panel">
-<div class="card"><h2 id="bannerHeading">Add Slider Media</h2>
-<form id="bannerForm"><input type="hidden" id="bannerId"><input type="hidden" id="bannerOldUrl"><input type="hidden" id="bannerOldType">
-<div class="grid"><div><label>Slider Placement *</label><select id="bPlacement"><option value="top">Top Slider</option><option value="bottom">Bottom Slider</option></select></div><div><label>Media Type *</label><select id="bMediaType"><option value="image">Photo / GIF</option></select></div><div><label>Title</label><input id="bTitle"></div><div><label>Subtitle</label><input id="bSubtitle"></div><div><label>Upload Photo / GIF / Video *</label><input id="bFile" type="file" accept="image/*"></div><div><label>Target URL</label><input id="bTarget" type="text" placeholder="#crystal-case / #new-arrivals / #designer / #premium"></div><div><label>Display Order</label><input id="bSort" type="number" value="0"></div></div>
+<div class="card"><h2 id="bannerHeading">Add Homepage Slider Image</h2>
+<form id="bannerForm"><input type="hidden" id="bannerId"><input type="hidden" id="bannerOldUrl">
+<div class="grid"><div><label>Title</label><input id="bTitle"></div><div><label>Subtitle</label><input id="bSubtitle"></div><div><label>Banner Image *</label><input id="bFile" type="file" accept="image/*" multiple></div><div><label>Target URL</label><input id="bTarget" type="url"></div><div><label>Display Order</label><input id="bSort" type="number" value="0"></div></div>
 <div class="checks"><label><input id="bActive" type="checkbox" checked> Published</label></div>
 <div class="actions"><button id="saveBannerBtn">Save Banner</button><button type="button" class="secondary" id="clearBanner">Clear</button></div></form></div>
-<div class="card"><h2>Top & Bottom Slider Media</h2><div class="muted">दोनों sliders का content अलग-अलग manage करें। Photo/GIF जोड़ें, display order बदलें, edit/delete करें और Published से live करें। Limit: हर image/GIF अधिकतम 8 MB प्रति file।</div><div class="tablewrap"><table><thead><tr><th>Preview</th><th>Placement / Type</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bannersList"></tbody></table></div></div>
+<div class="card"><h2>Homepage Slider Banners</h2><div class="muted">एक बार में कई images चुन सकते हैं। Slider में 8–10 या उससे अधिक banners जोड़ने के लिए हर image अलग record के रूप में save होगी।</div><div class="tablewrap"><table><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bannersList"></tbody></table></div></div>
 </section>
 
 <section id="tab-collections" class="panel">
-<div class="card"><h2 id="collectionHeading">Collection Display Images (Optional)</h2><p class="muted">ध्यान दें: खरीदने योग्य हर design को Products टैब में पूरा नाम, कीमत, फोटो, फोन ब्रांड/मॉडल और Section (Designer / New Arrivals / DIY) के साथ publish करें। ग्राहक product card पर कहीं भी टैप करेगा तो वह सीधे cart में जुड़ जाएगा। यहाँ की Collection Images केवल display/decoration के लिए हैं, इनसे order नहीं बनेगा।</p>
+<div class="card"><h2 id="collectionHeading">Add Designer / New Arrivals Card</h2>
 <form id="collectionForm"><input type="hidden" id="collectionId"><input type="hidden" id="collectionOldImage">
-<div class="grid"><div><label>Section *</label><select id="colSection"><option value="designer">Designer</option><option value="premium">Premium</option><option value="new_arrivals">New Arrivals</option></select></div><div><label>Title *</label><input id="colTitle" required></div><div><label>Subtitle</label><input id="colSubtitle"></div><div><label>Image *</label><input id="colFile" type="file" accept="image/*"></div><div><label>Display Order</label><input id="colSort" type="number" value="0"></div></div>
+<div class="grid"><div><label>Section *</label><select id="colSection"><option value="designer">Designer</option><option value="new_arrivals">New Arrivals</option><option value="diy">DIY</option></select></div><div><label>Title *</label><input id="colTitle" required></div><div><label>Subtitle</label><input id="colSubtitle"></div><div><label>Image *</label><input id="colFile" type="file" accept="image/*"></div><div><label>Display Order</label><input id="colSort" type="number" value="0"></div></div>
 <div class="actions"><button>Save Collection Card</button><button type="button" class="secondary" id="clearCollection">Clear</button></div></form></div>
-<div class="card"><h2>Designer, DIY & New Arrivals Images</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Section</th><th>Title</th><th>Order</th><th>Actions</th></tr></thead><tbody id="collectionsList"></tbody></table></div></div>
+<div class="card"><h2>Designer & New Arrivals Images</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Section</th><th>Title</th><th>Order</th><th>Actions</th></tr></thead><tbody id="collectionsList"></tbody></table></div></div>
 </section>
+
+<section id="tab-offers" class="panel">
+<div class="card"><h2>Offers & Discounts Manager</h2>
+<p class="muted">यहाँ automatic percentage offer बनाएं। Offer को पूरे store, category या एक product पर लागू कर सकते हैं। एक समय में matching offers stack नहीं होंगे।</p>
+<form id="offerForm"><input type="hidden" id="offerId">
+<div class="grid"><div><label>Offer Name *</label><input id="oName" required placeholder="Diwali Sale"></div><div><label>Discount % *</label><input id="oPercent" type="number" min="1" max="90" step="1" required placeholder="30"></div>
+<div><label>Apply To</label><select id="oScope"><option value="storewide">Entire Store</option><option value="category">Specific Category</option><option value="product">Specific Product</option></select></div>
+<div><label>Category / Product ID</label><input id="oTarget" placeholder="Category name or Product ID"></div>
+<div><label>Start Date & Time (optional)</label><input id="oStart" type="datetime-local"></div><div><label>End Date & Time (optional)</label><input id="oEnd" type="datetime-local"></div></div>
+<div class="checks"><label><input id="oActive" type="checkbox" checked> Active</label></div>
+<div class="actions"><button id="saveOfferBtn">Save Offer</button><button type="button" class="secondary" id="clearOffer">Clear</button></div></form>
+<div id="offersNotice" class="notice">Offers are saved in site_settings.settings.offers. The storefront and Cashfree server validation must also be updated before these discounts affect checkout.</div></div>
+<div class="card"><h2>Saved Offers</h2><div class="tablewrap"><table><thead><tr><th>Offer</th><th>Discount</th><th>Scope</th><th>Validity</th><th>Status</th><th>Actions</th></tr></thead><tbody id="offersList"></tbody></table></div></div>
+</section>
+<section id="tab-customers" class="panel"><div class="card"><h2>Customers</h2><p class="muted">ग्राहक सूची उनके orders से तैयार होती है। एक ग्राहक के कई orders को एक customer entry में जोड़ा जाएगा।</p><div class="tablewrap"><table><thead><tr><th>Customer</th><th>Phone</th><th>Email</th><th>Orders</th><th>Total Spend</th><th>Last Order</th></tr></thead><tbody id="customersList"></tbody></table></div></div></section>
 
 <section id="tab-orders" class="panel">
 <div class="card"><h2>Customer Orders</h2><div class="tablewrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Phone</th><th>Delivery Address</th><th>Items</th><th>Amount</th><th>Payment</th><th>Status</th><th>Update</th></tr></thead><tbody id="ordersList"></tbody></table></div></div>
@@ -132,7 +154,7 @@ const SUPABASE_PUBLISHABLE_KEY="sb_publishable_iPQiqgg3q-bFS6DbfCD9Zw_EJtt388B";
 const BUCKET="keycase-media";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 const $=id=>document.getElementById(id);
-let currentUser=null,products=[],categories=[],banners=[],collections=[];
+let currentUser=null,products=[],categories=[],banners=[],collections=[],orders=[],offers=[];
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=v=>"₹"+Number(v||0).toLocaleString("en-IN");
 function note(text,type=""){const el=$("appMsg");el.textContent=text;el.className="notice"+(type?" "+type:"");}
@@ -152,35 +174,36 @@ async function uploadImage(file,folder){
  if(error)throw new Error("Image upload failed: "+error.message);
  return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
-async function uploadSliderMedia(file,folder,kind){if(!file)return null;const isVideo=kind==="video",limit=isVideo?40*1024*1024:8*1024*1024;if(file.size>limit)throw new Error(isVideo?"एक video अधिकतम 40 MB की होनी चाहिए।":"एक image/GIF अधिकतम 8 MB की होनी चाहिए।");if(isVideo&&!["video/mp4","video/webm"].includes(file.type))throw new Error("Video के लिए MP4 या WebM file चुनें।");if(!isVideo&&!file.type.startsWith("image/"))throw new Error("Photo या GIF file चुनें।");const ext=(file.name.split(".").pop()||(isVideo?"mp4":"jpg")).toLowerCase().replace(/[^a-z0-9]/g,"")||(isVideo?"mp4":"jpg");const path=folder+"/"+Date.now()+"-"+crypto.randomUUID()+"."+ext;const {error}=await db.storage.from(BUCKET).upload(path,file,{upsert:false,contentType:file.type});if(error)throw new Error("Media upload failed: "+error.message);return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;}
 async function showApp(user){
  await requireAdmin(user);currentUser=user;
  $("adminEmail").textContent=user.email||"Admin";
  $("loginCard").classList.add("hidden");$("app").classList.remove("hidden");$("logout").classList.remove("hidden");
- await Promise.all([loadProducts(),loadCategories(),loadBanners(),loadCollections(),loadOrders(),loadReviews()]);
+ await Promise.all([loadProducts(),loadCategories(),loadBanners(),loadCollections(),loadOrders(),loadReviews(),loadOffers()]);
 }
 function clearProduct(){
- $("productForm").reset();$("productId").value="";$("pDesignGroup").value="";$("pStock").value=0;$("pSort").value=0;$("pActive").checked=true;$("pPrimary").checked=true;$("addColorVariant").classList.add("hidden");
- $("productHeading").textContent="Add Product";
+ $("productForm").reset();$("productId").value="";$("pStock").value=0;$("pSort").value=0;$("pActive").checked=true;$("pPrimaryVariant").checked=true;$("pDesignGroup").value="";
+ $("productHeading").textContent="Add Product";$("pDesignPreset").value="";
 }
 async function loadProducts(){
  const {data,error}=await db.from("products").select("*").order("sort_order",{ascending:true});
  if(error){note("Products load error: "+error.message,"error");return;}
  products=data||[];
- $("productsList").innerHTML=products.map(p=>`<tr><td>${p.image_urls?.[0]?`<img class="thumb" src="${esc(p.image_urls[0])}">`:"—"}</td><td><b>${esc(p.name)}</b><div class="muted">${esc(p.variant_color||"")}${p.design_group_id?(p.is_primary_variant?" · Main photo":" · Color variant"):""} · ${esc(p.brand||"")}</div></td><td>${esc(p.section||"")}</td><td>${money(p.price)}</td><td>${p.stock_quantity??p.stock??0}</td><td>${p.is_active??p.active?"Published":"Hidden"}</td><td><button class="secondary" data-pedit="${p.id}">Edit</button> <button class="danger" data-pdel="${p.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="7">No products yet.</td></tr>';
+ const groups=new Map();for(const p of products){if(p.design_group_id&&!groups.has(p.design_group_id))groups.set(p.design_group_id,p);}
+ $("pDesignPreset").innerHTML='<option value="">New design / कोई नहीं</option>'+[...groups.entries()].map(([id,p])=>`<option value="${esc(id)}">${esc(p.name||p.variant_color||"Design")} · ${esc(p.brand||"")} · ${esc(id.slice(0,8))}</option>`).join("");
+ $("productsList").innerHTML=products.map(p=>`<tr><td>${p.image_urls?.[0]?`<img class="thumb" src="${esc(p.image_urls[0])}">`:"—"}</td><td><b>${esc(p.name)}</b><div class="muted">${esc(p.brand||"")}</div></td><td>${esc(p.section||"")}</td><td>${esc(p.variant_color||"—")}<div class="muted">${esc(p.design_group_id||"")}</div></td><td>${money(p.price)}</td><td>${p.stock_quantity??p.stock??0}</td><td>${p.is_active??p.active?"Published":"Hidden"}</td><td><button class="secondary" data-pedit="${p.id}">Edit</button> <button class="danger" data-pdel="${p.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="8">No products yet.</td></tr>';
  $("productsList").querySelectorAll("[data-pedit]").forEach(b=>b.onclick=()=>editProduct(products.find(p=>String(p.id)===b.dataset.pedit)));
  $("productsList").querySelectorAll("[data-pdel]").forEach(b=>b.onclick=()=>deleteProduct(b.dataset.pdel));
 }
 function editProduct(p){
  if(!p)return;
- $("productId").value=p.id;$("pDesignGroup").value=p.design_group_id||"";$("pColor").value=p.variant_color||"";$("pPrimary").checked=p.is_primary_variant!==false;$("pName").value=p.name||"";$("pSku").value=p.sku||"";
- $("pBrand").value=p.brand||"";$("pCategory").value=p.category||"";$("pSection").value=p.section||"Crystal Clear";$("pMagSafe").value=p.magsafe_option||"";
+ $("productId").value=p.id;$("pDesignPreset").value=p.design_group_id||"";$("pName").value=p.name||"";$("pSku").value=p.sku||"";
+ $("pBrand").value=p.brand||"";$("pCategory").value=p.category||"";$("pSection").value=p.section||"Crystal Clear";$("pDesignGroup").value=p.design_group_id||"";$("pVariantColor").value=p.variant_color||"";$("pPrimaryVariant").checked=p.is_primary_variant!==false;
  $("pModels").value=(p.compatible_models||p.mobile_models||[]).join(", ");$("pPrice").value=p.price??"";
  $("pMrp").value=p.mrp??"";$("pStock").value=p.stock_quantity??p.stock??0;$("pSort").value=p.sort_order??0;
  $("pDescription").value=p.description||"";$("pImageUrls").value=(p.image_urls||[]).join("\n");
  $("pVideo").value=p.video_url||"";$("pActive").checked=p.is_active??p.active??true;
  $("pFeatured").checked=!!p.is_featured;$("pNew").checked=!!p.is_new_arrival;
- $("productHeading").textContent="Edit Product";$("addColorVariant").classList.remove("hidden");$("productCard").scrollIntoView({behavior:"smooth"});
+ $("productHeading").textContent="Edit Product";$("productCard").scrollIntoView({behavior:"smooth"});
 }
 async function deleteProduct(id){
  if(!confirm("क्या यह product delete करना है?"))return;
@@ -196,37 +219,28 @@ $("productForm").onsubmit=async e=>{
   const models=$("pModels").value.split(",").map(x=>x.trim()).filter(Boolean);
   const stock=Math.max(0,Number($("pStock").value||0));
   const active=$("pActive").checked;
-  const id=$("productId").value;
-  const groupId=$("pDesignGroup").value||crypto.randomUUID();
-  const colorName=$("pColor").value.trim();
+  let designGroup=$("pDesignGroup").value.trim();if(!designGroup && ["Designer","New Arrivals","DIY"].includes($("pSection").value)){designGroup=crypto.randomUUID();$("pDesignGroup").value=designGroup;}
   const payload={
-   name:$("pName").value.trim(),design_group_id:groupId,variant_color:colorName||null,is_primary_variant:$("pPrimary").checked,sku:$("pSku").value.trim()||null,brand:$("pBrand").value.trim()||null,
-   category:$("pCategory").value.trim()||null,section:$("pSection").value,magsafe_option:$("pMagSafe").value||null,
+   name:$("pName").value.trim(),sku:$("pSku").value.trim()||null,brand:$("pBrand").value.trim()||null,
+   category:$("pCategory").value.trim()||null,section:$("pSection").value,
    model:models[0]||"Universal",compatible_models:models,mobile_models:models,price:Number($("pPrice").value),
    mrp:$("pMrp").value===""?null:Number($("pMrp").value),
    stock_quantity:stock,stock:stock,sort_order:Number($("pSort").value||0),
    description:$("pDescription").value.trim()||null,image_urls:images,
    image_url:images[0]||null,video_url:$("pVideo").value.trim()||null,
    is_active:active,active:active,is_featured:$("pFeatured").checked,
-   is_new_arrival:$("pNew").checked,updated_by:currentUser.id,updated_at:new Date().toISOString()
+   is_new_arrival:$("pNew").checked,design_group_id:designGroup||null,variant_color:$("pVariantColor").value.trim()||null,is_primary_variant:$("pPrimaryVariant").checked,updated_by:currentUser.id,updated_at:new Date().toISOString()
   };
   if(!payload.name||!Number.isFinite(payload.price)||payload.price<0)throw new Error("Product name और सही price भरें।");
-  if(!id&&!colorName)throw new Error("हर नई फोटो के लिए Color Name भरें।");
+  const id=$("productId").value;
   const result=id?await db.from("products").update(payload).eq("id",id):await db.from("products").insert(payload);
   if(result.error)throw result.error;
-  clearProduct();$("pFiles").value="";note("Product / color variant save हो गया।","success");await loadProducts();
+  clearProduct();$("pFiles").value="";note("Product save हो गया।","success");await loadProducts();
  }catch(err){note(err.message||String(err),"error");}
  finally{btn.disabled=false;}
 };
+$("pDesignPreset").onchange=()=>{if($("pDesignPreset").value)$("pDesignGroup").value=$("pDesignPreset").value;};
 $("clearProduct").onclick=clearProduct;
-$("addColorVariant").onclick=async()=>{
- const currentId=$("productId").value;if(!currentId){note("पहले Main Design Photo सेव करें, फिर Edit करके color जोड़ें।","error");return;}
- let groupId=$("pDesignGroup").value;
- if(!groupId){groupId=crypto.randomUUID();const {error}=await db.from("products").update({design_group_id:groupId,is_primary_variant:true}).eq("id",currentId);if(error){note("Design group update failed: "+error.message,"error");return;}$("pDesignGroup").value=groupId;}
- const v={name:$("pName").value,brand:$("pBrand").value,category:$("pCategory").value,section:$("pSection").value,models:$("pModels").value,price:$("pPrice").value,mrp:$("pMrp").value,stock:$("pStock").value,description:$("pDescription").value};
- $("productId").value="";$("pDesignGroup").value=groupId;$("pSku").value="";$("pColor").value="";$("pPrimary").checked=false;$("pName").value=v.name;$("pBrand").value=v.brand;$("pCategory").value=v.category;$("pSection").value=v.section;$("pModels").value=v.models;$("pPrice").value=v.price;$("pMrp").value=v.mrp;$("pStock").value=v.stock;$("pDescription").value=v.description;$("pImageUrls").value="";$("pFiles").value="";$("pFeatured").checked=false;$("pNew").checked=false;
- $("productHeading").textContent="Add Color Variant — "+v.name;$("addColorVariant").classList.add("hidden");$("productCard").scrollIntoView({behavior:"smooth"});
-};
 
 async function loadCategories(){
  const {data,error}=await db.from("product_categories").select("*").order("sort_order",{ascending:true});
@@ -252,11 +266,27 @@ $("categoryForm").onsubmit=async e=>{
 };
 $("clearCategory").onclick=clearCategory;
 
-async function loadBanners(){const {data,error}=await db.from("store_banners").select("*").order("placement",{ascending:true}).order("sort_order",{ascending:true});if(error){$("bannersList").innerHTML=`<tr><td colspan="6">${esc(error.message)}</td></tr>`;return;}banners=data||[];$("bannersList").innerHTML=banners.map(b=>`<tr><td>${b.media_type==="video"?'<video class="thumb" src="'+esc(b.image_url)+'" muted playsinline></video>':'<img class="thumb" src="'+esc(b.image_url)+'">'}</td><td>${esc(b.placement==="bottom"?"Bottom":"Top")} · ${esc(b.media_type||"image")}</td><td>${esc(b.title||"")}</td><td>${b.sort_order}</td><td>${b.is_active?"Published":"Hidden"}</td><td><button class="secondary" data-bedit="${b.id}">Edit</button> <button class="danger" data-bdel="${b.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="6">No slider media yet.</td></tr>';$("bannersList").querySelectorAll("[data-bedit]").forEach(b=>b.onclick=()=>editBanner(banners.find(x=>x.id===b.dataset.bedit)));$("bannersList").querySelectorAll("[data-bdel]").forEach(b=>b.onclick=()=>deleteBanner(b.dataset.bdel));}
-function clearBanner(){$("bannerForm").reset();$("bannerId").value="";$("bannerOldUrl").value="";$("bannerOldType").value="image";$("bSort").value=0;$("bPlacement").value="top";$("bMediaType").value="image";$("bActive").checked=true;$("bFile").required=true;$("bannerHeading").textContent="Add Slider Media";}
-function editBanner(b){if(!b)return;$("bannerId").value=b.id;$("bannerOldUrl").value=b.image_url||"";$("bannerOldType").value=b.media_type||"image";$("bPlacement").value=b.placement||"top";$("bMediaType").value=b.media_type||"image";$("bTitle").value=b.title||"";$("bSubtitle").value=b.subtitle||"";$("bTarget").value=b.target_url||"";$("bSort").value=b.sort_order||0;$("bActive").checked=b.is_active!==false;$("bFile").required=false;$("bannerHeading").textContent="Edit Slider Media";}
-async function deleteBanner(id){if(!confirm("Slider media delete करें?"))return;const {error}=await db.from("store_banners").delete().eq("id",id);if(error){note(error.message,"error");return;}note("Slider media deleted.","success");await loadBanners();}
-$("bannerForm").onsubmit=async e=>{e.preventDefault();const btn=$("saveBannerBtn");btn.disabled=true;try{const kind=$("bMediaType").value;let media=$("bannerOldUrl").value;const file=$("bFile").files[0];if(file)media=await uploadSliderMedia(file,"banners",kind);if(!file&&$("bannerId").value&&kind!==$("bannerOldType").value)throw new Error("Media type बदलने पर नई file भी upload करें।");if(!media)throw new Error("Photo/GIF/Video चुनें।");const payload={placement:$("bPlacement").value,media_type:kind,title:$("bTitle").value.trim()||null,subtitle:$("bSubtitle").value.trim()||null,image_url:media,target_url:$("bTarget").value.trim()||null,sort_order:Number($("bSort").value||0),is_active:$("bActive").checked};const id=$("bannerId").value;const r=id?await db.from("store_banners").update(payload).eq("id",id):await db.from("store_banners").insert(payload);if(r.error)throw r.error;clearBanner();note("Slider media save हो गया।","success");await loadBanners();}catch(err){note(err.message||String(err),"error");}finally{btn.disabled=false;}};
+async function loadBanners(){
+ const {data,error}=await db.from("store_banners").select("*").order("sort_order",{ascending:true});
+ if(error){$("bannersList").innerHTML=`<tr><td colspan="5">${esc(error.message)}</td></tr>`;return;}
+ banners=data||[];
+ $("bannersList").innerHTML=banners.map(b=>`<tr><td><img class="thumb" src="${esc(b.image_url)}"></td><td>${esc(b.title||"")}</td><td>${b.sort_order}</td><td>${b.is_active?"Published":"Hidden"}</td><td><button class="secondary" data-bedit="${b.id}">Edit</button> <button class="danger" data-bdel="${b.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="5">No banners.</td></tr>';
+ $("bannersList").querySelectorAll("[data-bedit]").forEach(b=>b.onclick=()=>editBanner(banners.find(x=>x.id===b.dataset.bedit)));
+ $("bannersList").querySelectorAll("[data-bdel]").forEach(b=>b.onclick=()=>deleteBanner(b.dataset.bdel));
+}
+function clearBanner(){$("bannerForm").reset();$("bannerId").value="";$("bannerOldUrl").value="";$("bSort").value=0;$("bActive").checked=true;$("bFile").required=true;$("bannerHeading").textContent="Add Homepage Slider Image";}
+function editBanner(b){if(!b)return;$("bannerId").value=b.id;$("bannerOldUrl").value=b.image_url||"";$("bTitle").value=b.title||"";$("bSubtitle").value=b.subtitle||"";$("bTarget").value=b.target_url||"";$("bSort").value=b.sort_order||0;$("bActive").checked=b.is_active!==false;$("bFile").required=false;$("bannerHeading").textContent="Edit Banner";}
+async function deleteBanner(id){if(!confirm("Banner delete करें?"))return;const {error}=await db.from("store_banners").delete().eq("id",id);if(error){note(error.message,"error");return;}note("Banner deleted.","success");await loadBanners();}
+$("bannerForm").onsubmit=async e=>{
+ e.preventDefault();const btn=$("saveBannerBtn");btn.disabled=true;
+ try{
+  const files=[...$("bFile").files];const id=$("bannerId").value;
+  if(files.length>1 && id)throw new Error("Edit करते समय एक image चुनें; नई images के लिए Add mode इस्तेमाल करें।");
+  if(files.length>1){let order=Number($("bSort").value||0);for(const file of files){const image=await uploadImage(file,"banners");const payload={title:$("bTitle").value.trim()||null,subtitle:$("bSubtitle").value.trim()||null,image_url:image,target_url:$("bTarget").value.trim()||null,sort_order:order++,is_active:$("bActive").checked};const r=await db.from("store_banners").insert(payload);if(r.error)throw r.error;}}
+  else {let image=$("bannerOldUrl").value;if(files[0])image=await uploadImage(files[0],"banners");if(!image)throw new Error("Banner image चुनें।");const payload={title:$("bTitle").value.trim()||null,subtitle:$("bSubtitle").value.trim()||null,image_url:image,target_url:$("bTarget").value.trim()||null,sort_order:Number($("bSort").value||0),is_active:$("bActive").checked};const r=id?await db.from("store_banners").update(payload).eq("id",id):await db.from("store_banners").insert(payload);if(r.error)throw r.error;}
+  clearBanner();note("Banner save हो गया।","success");await loadBanners();
+ }catch(err){note(err.message||String(err),"error");}finally{btn.disabled=false;}
+};
 $("clearBanner").onclick=clearBanner;
 
 async function loadCollections(){
@@ -282,9 +312,10 @@ $("collectionForm").onsubmit=async e=>{
 $("clearCollection").onclick=clearCollection;
 
 async function loadOrders(){
- const {data,error}=await db.from("orders").select("id,customer_name,phone,shipping_address,items,total,status,payment_status,created_at").order("created_at",{ascending:false}).limit(200);
+ const {data,error}=await db.from("orders").select("id,customer_name,customer_email,phone,shipping_address,items,total,status,payment_status,created_at").order("created_at",{ascending:false}).limit(200);
  if(error){$("ordersList").innerHTML=`<tr><td colspan="9">${esc(error.message)}</td></tr>`;return;}
- $("ordersList").innerHTML=(data||[]).map(o=>`<tr><td>#${o.id}<div class="muted">${o.created_at?new Date(o.created_at).toLocaleString("en-IN"):""}</div></td><td>${esc(o.customer_name)}</td><td>${esc(o.phone)}</td><td>${esc(o.shipping_address||"")}</td><td>${esc(Array.isArray(o.items)?o.items.map(x=>`${x.name||x.product_id}${x.variant_color?" ("+x.variant_color+")":""} × ${x.qty??x.quantity??1}`).join(", "):"")}</td><td>${money(o.total)}</td><td>${esc(o.payment_status)}</td><td>${esc(o.status)}</td><td><select data-order="${o.id}"><option ${o.status==="New"?"selected":""}>New</option><option ${o.status==="Processing"?"selected":""}>Processing</option><option ${o.status==="Shipped"?"selected":""}>Shipped</option><option ${o.status==="Delivered"?"selected":""}>Delivered</option><option ${o.status==="Cancelled"?"selected":""}>Cancelled</option></select></td></tr>`).join("")||'<tr><td colspan="9">No orders.</td></tr>';
+ orders=data||[];renderCustomers();
+ $("ordersList").innerHTML=(data||[]).map(o=>`<tr><td>#${o.id}<div class="muted">${o.created_at?new Date(o.created_at).toLocaleString("en-IN"):""}</div></td><td>${esc(o.customer_name)}</td><td>${esc(o.phone)}</td><td>${esc(o.shipping_address||"")}</td><td>${esc(Array.isArray(o.items)?o.items.map(x=>`${x.name||x.product_id} × ${x.quantity}`).join(", "):"")}</td><td>${money(o.total)}</td><td>${esc(o.payment_status)}</td><td>${esc(o.status)}</td><td><select data-order="${o.id}"><option ${o.status==="New"?"selected":""}>New</option><option ${o.status==="Processing"?"selected":""}>Processing</option><option ${o.status==="Shipped"?"selected":""}>Shipped</option><option ${o.status==="Delivered"?"selected":""}>Delivered</option><option ${o.status==="Cancelled"?"selected":""}>Cancelled</option></select></td></tr>`).join("")||'<tr><td colspan="9">No orders.</td></tr>';
  $("ordersList").querySelectorAll("[data-order]").forEach(s=>s.onchange=async()=>{const {error}=await db.from("orders").update({status:s.value}).eq("id",s.dataset.order);if(error){note("Order update error: "+error.message,"error");return;}note("Order status updated.","success");});
 }
 async function loadReviews(){
@@ -294,6 +325,26 @@ async function loadReviews(){
  $("reviewsList").querySelectorAll("[data-review]").forEach(b=>b.onclick=async()=>{const {error}=await db.from("product_reviews").update({status:b.dataset.status}).eq("id",b.dataset.review);if(error){note("Review update error: "+error.message,"error");return;}note("Review status updated.","success");await loadReviews();});
 }
 
+async function loadOffers(){
+ const {data,error}=await db.from("site_settings").select("settings").eq("id",1).maybeSingle();
+ if(error){$("offersList").innerHTML=`<tr><td colspan="6">${esc(error.message)}</td></tr>`;return;}
+ offers=Array.isArray(data?.settings?.offers)?data.settings.offers:[];renderOffers();
+}
+function renderOffers(){
+ $("offersList").innerHTML=offers.map(o=>`<tr><td>${esc(o.name)}</td><td>${Number(o.discount_percent)||0}% OFF</td><td>${esc(o.scope||"storewide")}${o.target?" · "+esc(o.target):""}</td><td>${esc(o.starts_at||"Any time")}<br>${esc(o.ends_at||"No end")}</td><td>${o.is_active?"Active":"Paused"}</td><td><button class="secondary" data-oedit="${esc(o.id)}">Edit</button> <button class="danger" data-odel="${esc(o.id)}">Delete</button></td></tr>`).join("")||'<tr><td colspan="6">No offers saved.</td></tr>';
+ $("offersList").querySelectorAll("[data-oedit]").forEach(b=>b.onclick=()=>editOffer(offers.find(o=>o.id===b.dataset.oedit)));
+ $("offersList").querySelectorAll("[data-odel]").forEach(b=>b.onclick=()=>{if(!confirm("यह offer delete करें?"))return;offers=offers.filter(o=>o.id!==b.dataset.odel);saveOffers();});
+}
+function clearOffer(){$("offerForm").reset();$("offerId").value="";$("oActive").checked=true;}
+function editOffer(o){if(!o)return;$("offerId").value=o.id;$("oName").value=o.name||"";$("oPercent").value=o.discount_percent||"";$("oScope").value=o.scope||"storewide";$("oTarget").value=o.target||"";$("oStart").value=o.starts_at||"";$("oEnd").value=o.ends_at||"";$("oActive").checked=!!o.is_active;}
+async function saveOffers(){
+ const {data,error}=await db.from("site_settings").select("settings").eq("id",1).maybeSingle();if(error)throw error;
+ const settings={...(data?.settings||{}),offers};const r=await db.from("site_settings").upsert({id:1,settings,updated_at:new Date().toISOString()},{onConflict:"id"});if(r.error)throw r.error;renderOffers();note("Offer settings save हो गईं। ध्यान दें: checkout पर discount लागू करने के लिए Cashfree Edge Function और storefront integration अलग से update करना जरूरी है।","success");
+}
+$("offerForm").onsubmit=async e=>{e.preventDefault();const percent=Number($("oPercent").value);if(!Number.isInteger(percent)||percent<1||percent>90){note("Discount 1% से 90% के बीच whole number रखें।","error");return;}const scope=$("oScope").value,target=$("oTarget").value.trim();if(scope!=="storewide"&&!target){note("Category या Product target भरें।","error");return;}const id=$("offerId").value||crypto.randomUUID();const item={id,name:$("oName").value.trim(),discount_percent:percent,scope,target:scope==="storewide"?null:target,starts_at:$("oStart").value||null,ends_at:$("oEnd").value||null,is_active:$("oActive").checked};const i=offers.findIndex(x=>x.id===id);if(i>=0)offers[i]=item;else offers.push(item);try{await saveOffers();clearOffer();}catch(err){note("Offer save error: "+(err.message||err),"error");}};
+$("clearOffer").onclick=clearOffer;
+function renderCustomers(){const map=new Map();for(const o of orders){const key=(o.phone||o.customer_email||String(o.id)).toLowerCase();let c=map.get(key);if(!c){c={name:o.customer_name||"Customer",phone:o.phone||"",email:o.customer_email||"",count:0,total:0,last:o.created_at};map.set(key,c);}c.count++;c.total+=Number(o.total||0);if(o.created_at&&(!c.last||o.created_at>c.last))c.last=o.created_at;}$("customersList").innerHTML=[...map.values()].sort((a,b)=>String(b.last).localeCompare(String(a.last))).map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${esc(c.email)}</td><td>${c.count}</td><td>${money(c.total)}</td><td>${c.last?new Date(c.last).toLocaleDateString("en-IN"):"—"}</td></tr>`).join("")||'<tr><td colspan="6">No customer orders yet.</td></tr>';}
+
 $("loginForm").onsubmit=async e=>{
  e.preventDefault();const btn=$("loginBtn");btn.disabled=true;
  try{const {data,error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)throw error;await showApp(data.user);}
@@ -301,7 +352,7 @@ $("loginForm").onsubmit=async e=>{
  finally{btn.disabled=false;}
 };
 $("logout").onclick=async()=>{await db.auth.signOut();currentUser=null;$("app").classList.add("hidden");$("loginCard").classList.remove("hidden");$("logout").classList.add("hidden");};
-$("refreshAll").onclick=async()=>{await Promise.all([loadProducts(),loadCategories(),loadBanners(),loadCollections(),loadOrders(),loadReviews()]);note("सभी data refresh हो गया।","success");};
+$("refreshAll").onclick=async()=>{await Promise.all([loadProducts(),loadCategories(),loadBanners(),loadCollections(),loadOrders(),loadReviews(),loadOffers()]);note("सभी data refresh हो गया।","success");};
 document.querySelectorAll("[data-tab]").forEach(btn=>btn.onclick=()=>{
  document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===btn));
  document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("active",x.id==="tab-"+btn.dataset.tab));
