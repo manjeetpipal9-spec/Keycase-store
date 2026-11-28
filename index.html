@@ -49,13 +49,62 @@ main{max-width:1360px;padding:28px clamp(14px,4.5vw,64px)}
 .footer{border-radius:22px 22px 0 0;margin-top:50px;background:#171614;padding:32px}
 @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.photo,.collection-photo{height:auto;aspect-ratio:1/1}.hero{border-radius:18px}.info{padding:11px}.info h3{font-size:14px}.add{padding:10px 6px;font-size:11px}}
 @media(max-width:420px){.photo,.collection-photo{height:auto;aspect-ratio:1/1}.section-head{margin-top:30px}.collection-shop{font-size:11px;padding:9px 6px}}
-</style></head>
+</style>
+<style>
+/* KEYCASE premium device-first storefront refresh */
+:root{--kc-ink:#171717;--kc-gold:#c7a36a;--kc-paper:#fffdf9;--kc-line:#e9e2d8}
+body{background:#fff;color:var(--kc-ink)}
+.promo-ribbon{background:#171717;color:#fff;text-align:center;padding:9px 12px;font-size:11px;letter-spacing:1.2px;font-weight:700}
+header{padding:13px clamp(15px,5vw,72px);background:#fff;box-shadow:0 5px 22px #1717170a}
+.logo{font-size:23px;letter-spacing:1.5px}
+.kc-nav{display:flex;align-items:center;gap:clamp(10px,2vw,25px);font-size:11px;font-weight:750;letter-spacing:.7px;text-transform:uppercase}
+.kc-nav a:hover{color:#a77d43}
+.hero{min-height:300px;border-radius:0;background:linear-gradient(115deg,#171717 0%,#332a20 65%,#80633b 130%);padding:clamp(28px,6vw,68px);margin:0 0 18px}
+.hero h1{font:normal clamp(36px,6vw,64px)/1.04 Georgia,serif;letter-spacing:-1px}
+.hero p{max-width:500px;font-size:15px}
+.slider{margin:18px 0 26px;border-radius:2px;max-height:430px}
+.kc-offers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0 34px}
+.kc-offer{background:#f7f3ed;border:1px solid var(--kc-line);padding:16px 10px;text-align:center}
+.kc-offer b{display:block;font:26px Georgia,serif;color:#a77d43}
+.kc-offer span{display:block;margin-top:5px;font-size:10px;letter-spacing:1px;font-weight:800}
+.kc-section{margin:38px 0}
+.kc-section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin-bottom:16px}
+.kc-section-head h2{font:normal clamp(25px,3vw,36px) Georgia,serif;margin:0}
+.kc-section-head p{color:#777;font-size:12px;margin:6px 0 0}
+#deviceFinder{background:#f7f4ef;padding:22px;border:1px solid var(--kc-line);margin:24px 0 34px}
+.kc-brand-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.kc-brand{border:1px solid #e5ddd1;background:#fff;padding:13px 6px;text-align:center;cursor:pointer;font-weight:750;font-size:12px;border-radius:10px}
+.kc-brand:hover,.kc-brand.active{background:#211e19;color:#fff;border-color:#211e19}
+.kc-model-row{display:flex;gap:8px;align-items:center;margin-top:15px;flex-wrap:wrap}
+.kc-model-row select{padding:12px;border:1px solid #ddd;background:#fff;border-radius:9px;min-width:min(100%,260px);font:inherit}
+.kc-model-row button{padding:12px 18px;border:0;background:#211e19;color:#fff;border-radius:9px;font-weight:750}
+.section-head{margin:36px 0 17px}
+.section-head h2{font:normal clamp(25px,3vw,36px) Georgia,serif}
+.grid{gap:clamp(10px,1.5vw,19px)}
+.card,.collection-card{border:1px solid #ece6dd;border-radius:13px;overflow:hidden;box-shadow:0 5px 18px #17171708;background:#fff;transition:transform .2s,box-shadow .2s}
+.card:hover,.collection-card:hover{transform:translateY(-4px);box-shadow:0 14px 28px #17171714}
+.photo,.collection-photo{height:auto;aspect-ratio:1/1;background:#f1eee9}
+.photo img,.collection-photo img{object-fit:cover}
+.info{padding:14px}
+.info small{color:#a77d43;font-weight:800;letter-spacing:1px}
+.info h3{font-size:14px;line-height:1.4}
+.price{font-size:18px}
+.add{border-radius:8px;background:#191714}
+.collection-info{padding:14px}
+.collection-shop{border-radius:8px;background:#191714}
+.toolbar{margin:24px 0}
+.footer{border-radius:0;margin-top:48px}
+@media(max-width:760px){.kc-nav{order:3;width:100%;overflow:auto;justify-content:space-between;padding:8px 0 2px;font-size:9px}.kc-brand-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{min-height:265px}.kc-offer b{font-size:22px}}
+@media(max-width:420px){.kc-offer{padding:13px 5px}.kc-offer span{font-size:8px}.kc-brand{font-size:11px;padding:12px 3px}#deviceFinder{padding:14px}.kc-model-row select,.kc-model-row button{width:100%}}
+</style>
+</head>
 <body>
-<header><a class="logo" href="/">KEYCASE<span>.</span>STORE</a><div style="display:flex;align-items:center;gap:12px"><small>Premium phone covers</small><button id="cartOpen" style="border:0;background:#201d19;color:white;padding:10px 12px;cursor:pointer">CART (<span id="cartCount">0</span>)</button></div></header>
+<div class="promo-ribbon">PREMIUM PHONE COVERS · FIND YOUR STYLE · SECURE CHECKOUT</div><header><a class="logo" href="/">KEYCASE<span>.</span>STORE</a><nav class="kc-nav"><a href="#deviceFinder">Shop by Phone</a><a href="#categoriesSection">Collections</a><a href="#newArrivalsSection">New Arrivals</a><a href="#designerSection">Designer</a><a href="#products">Shop All</a></nav><div style="display:flex;align-items:center;gap:10px"><button id="cartOpen" style="border:0;background:#201d19;color:white;padding:10px 12px;cursor:pointer;border-radius:8px">BAG (<span id="cartCount">0</span>)</button></div></header>
 <main>
 <section class="hero"><small>PROTECT • PERSONALIZE • EXPRESS</small><h1>Your phone.<br> Your style.</h1><p>Discover stylish phone covers made to match your everyday look.</p></section>
 <section id="bannerSlider" class="slider hidden" aria-label="Store banners"><div id="slides"></div><button class="slide-control prev" id="prev" aria-label="Previous banner">‹</button><button class="slide-control next" id="next" aria-label="Next banner">›</button><div class="dots" id="dots"></div></section>
 <div id="bannerNotice" class="notice hidden"></div>
+<section id="deviceFinder" class="kc-section"><div class="kc-section-head"><div><h2>Shop by Phone Brand</h2><p>Choose your phone brand, then select your exact model.</p></div></div><div id="brandTiles" class="kc-brand-grid"><div class="empty">Phone brands loading…</div></div><div class="kc-model-row"><select id="deviceModel"><option value="">Select your phone model</option></select><button type="button" id="findModelBtn">FIND COVERS</button></div></section><div class="kc-offers"><div class="kc-offer"><b>₹399</b><span>BUY 1 COVER</span></div><div class="kc-offer"><b>₹699</b><span>BUY 2 COVERS</span></div><div class="kc-offer"><b>₹899</b><span>BUY 3 COVERS</span></div></div>
 <section id="categoriesSection"><div class="section-head"><h2>Shop by Category</h2><small id="categoryCount">Loading categories…</small></div><div id="categories" class="grid"><div class="empty">Categories लोड हो रही हैं…</div></div></section>
 <section id="newArrivalsSection"><div class="section-head"><h2>New Arrivals</h2><small id="newArrivalsCount"></small></div><div id="newArrivals" class="grid"><div class="empty">New Arrivals लोड हो रहे हैं…</div></div></section>
 <section id="designerSection"><div class="section-head"><h2>Designer Collection</h2><small id="designerCount"></small></div><div id="designer" class="grid"><div class="empty">Designer collection लोड हो रहा है…</div></div></section>
@@ -95,7 +144,18 @@ function restartTimer(){if(slideTimer)clearInterval(slideTimer);if(bannerList.le
 async function loadBanners(){const {data,error}=await db.from('store_banners').select('id,title,image_url,target_url,sort_order,is_active').eq('is_active',true).order('sort_order',{ascending:true});if(error){console.warn('Banner load:',error.message);$('bannerNotice').textContent='Slider banners अभी लोड नहीं हुए।';$('bannerNotice').classList.remove('hidden');return}bannerList=(data||[]).filter(b=>b.image_url);if(!bannerList.length)return;$('slides').innerHTML=bannerList.map((b,i)=>{const inner=`<img src="${esc(b.image_url)}" alt="${esc(b.title||'KEYCASE banner')}" ${i?'loading="lazy"':''}><div class="slide-caption"><h2>${esc(b.title||'New arrivals')}</h2></div>`;return `<div class="slide ${i===0?'active':''}">${b.target_url?`<a href="${esc(b.target_url)}">${inner}</a>`:inner}</div>`}).join('');$('dots').innerHTML=bannerList.map((_,i)=>`<button class="${i===0?'active':''}" aria-label="Banner ${i+1}" data-dot="${i}"></button>`).join('');$('bannerSlider').classList.remove('hidden');$('prev').onclick=()=>{showSlide(slideIndex-1);restartTimer()};$('next').onclick=()=>{showSlide(slideIndex+1);restartTimer()};$('dots').querySelectorAll('[data-dot]').forEach(b=>b.onclick=()=>{showSlide(Number(b.dataset.dot));restartTimer()});restartTimer()}
 async function loadCategories(){const {data,error}=await db.from('product_categories').select('id,name,image_url,is_active,sort_order').eq('is_active',true).order('sort_order',{ascending:true});if(error){$('categories').innerHTML='<div class="empty">Categories लोड नहीं हो पाईं।</div>';console.warn('Category load:',error.message);return}const list=data||[];$('categoryCount').textContent=list.length+' categories';$('categories').innerHTML=list.length?list.map(x=>collectionCard(x,'category')).join(''):'<div class="empty">अभी कोई category उपलब्ध नहीं है।</div>'}
 const collectionPhotos={designer:[],new_arrivals:[]};let activeSectionFilter='';function renderCollectionSection(section,container,countId){const photos=collectionPhotos[section]||[];const sectionProducts=products.filter(p=>{const s=String(p.section||'').trim().toLowerCase(),cat=String(p.category||'').trim().toLowerCase();return section==='new_arrivals'?s==='new arrivals':(s==='designer'||s==='designer collection'||cat==='designer')});$(countId).textContent=(photos.length?photos.length+' photos':'')+(sectionProducts.length?(photos.length?' · ':'')+sectionProducts.length+' products':'');const html=[...photos.map(x=>collectionCard(x,section)),...sectionProducts.map(productCard)].join('');$(container).innerHTML=html||'<div class="empty">इस collection में अभी फोटो या product नहीं है। Admin Panel → Products में product जोड़ें और Section चुनें।</div>'}async function loadCollections(section,container,countId){const {data,error}=await db.from('collection_cards').select('id,section,title,subtitle,image_url,sort_order').eq('section',section).order('sort_order',{ascending:true});if(error){$(container).innerHTML='<div class="empty">यह collection अभी लोड नहीं हो पाई।</div>';console.warn(section+' load:',error.message);return}collectionPhotos[section]=(data||[]).filter(x=>x.image_url);renderCollectionSection(section,container,countId)}
-async function loadProducts(){const {data,error}=await db.from('products').select('*').eq('is_active',true).order('sort_order',{ascending:true});if(error){$('products').innerHTML='<div class="empty">Products load नहीं हो पाए।</div>';$('loadNotice').textContent='Product data fetch error: '+error.message;$('loadNotice').classList.remove('hidden');console.error(error);return}products=data||[];const brands=[...new Set(products.map(p=>p.brand).filter(Boolean))].sort();$('brand').innerHTML='<option value="">All brands</option>'+brands.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join('');renderProducts();renderCollectionSection('new_arrivals','newArrivals','newArrivalsCount');renderCollectionSection('designer','designer','designerCount')}
+async function loadProducts(){const {data,error}=await db.from('products').select('*').eq('is_active',true).order('sort_order',{ascending:true});if(error){$('products').innerHTML='<div class="empty">Products load नहीं हो पाए।</div>';$('loadNotice').textContent='Product data fetch error: '+error.message;$('loadNotice').classList.remove('hidden');console.error(error);return}products=data||[];const brands=[...new Set(products.map(p=>p.brand).filter(Boolean))].sort();renderDeviceFinder();$('brand').innerHTML='<option value="">All brands</option>'+brands.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join('');renderProducts();renderCollectionSection('new_arrivals','newArrivals','newArrivalsCount');renderCollectionSection('designer','designer','designerCount')}
+function renderDeviceFinder(){
+ const brands=[...new Set(products.map(p=>String(p.brand||'').trim()).filter(Boolean))].sort();
+ const tiles=$('brandTiles'),model=$('deviceModel');if(!tiles||!model)return;
+ tiles.innerHTML=brands.map(b=>'<button type="button" class="kc-brand" data-brand-pick="'+esc(b)+'">'+esc(b)+'</button>').join('')||'<div class="empty">Admin Panel में products के brand जोड़ें।</div>';
+ function fillModels(brand){const models=[...new Set(products.filter(p=>!brand||String(p.brand||'').toLowerCase()===brand.toLowerCase()).flatMap(p=>[...(Array.isArray(p.compatible_models)?p.compatible_models:[]),...(Array.isArray(p.mobile_models)?p.mobile_models:[])])).filter(Boolean)].sort();model.innerHTML='<option value="">Select your phone model</option>'+models.map(m=>'<option value="'+esc(m)+'">'+esc(m)+'</option>').join('');}
+ fillModels('');
+ tiles.onclick=e=>{const b=e.target.closest('[data-brand-pick]');if(!b)return;tiles.querySelectorAll('.kc-brand').forEach(x=>x.classList.toggle('active',x===b));$('brand').value=b.dataset.brandPick;fillModels(b.dataset.brandPick);$('search').value='';activeSectionFilter='';renderProducts();};
+ $('findModelBtn').onclick=()=>{const chosen=model.value;if(!chosen){model.focus();return;}$('search').value=chosen;activeSectionFilter='';renderProducts();$('products').scrollIntoView({behavior:'smooth',block:'start'});};
+ model.onchange=()=>{if(model.value){$('search').value=model.value;activeSectionFilter='';renderProducts();}};
+}
+
 $('search').addEventListener('input',()=>{activeSectionFilter='';renderProducts()});$('brand').addEventListener('change',()=>{activeSectionFilter='';renderProducts()});document.addEventListener('click',e=>{const shop=e.target.closest('[data-shop-section]');if(!shop)return;activeSectionFilter=shop.dataset.shopSection;renderProducts();$('products').scrollIntoView({behavior:'smooth',block:'start'});});$('year').textContent=new Date().getFullYear();let cart=JSON.parse(sessionStorage.getItem('keycase_cart')||'[]');
 function saveCart(){sessionStorage.setItem('keycase_cart',JSON.stringify(cart));$('cartCount').textContent=cart.reduce((n,x)=>n+x.quantity,0);renderCart()}
 function renderCart(){
