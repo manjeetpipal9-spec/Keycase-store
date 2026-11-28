@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -138,11 +138,11 @@ return `<article class="card"><div class="photo">${image?`<img src="${esc(image)
 function render(id,list,msg){$(id).innerHTML=list.length?list.map(card).join(""):`<div class="empty">${msg}</div>`}
 async function load(){
 const {data,error}=await db.from("products").select("id,name,brand,category,section,compatible_models,description,price,mrp,image_urls,is_new_arrival,is_active,sort_order").eq("is_active",true).order("sort_order",{ascending:true});
-if(error){["crystalProducts","designerProducts","newProducts"].forEach(id=>$(id).innerHTML='<div class="empty">Products अभी load नहीं हो पाए। कृपया बाद में कोशिश करें।</div>');console.error(error);return}
+if(error){["crystalProducts","designerProducts","newProducts"].forEach(id=>$(id).innerHTML='<div class="empty">Products could not be loaded. Please try again later.</div>');console.error(error);return}
 products=data||[];
-render("crystalProducts",products.filter(p=>section(p).includes("crystal")&&!section(p).includes("mag")),"Crystal Clear products Admin में publish होने पर दिखेंगे।");
-render("designerProducts",products.filter(p=>section(p).includes("designer")),"Designer products Admin में publish होने पर दिखेंगे।");
-render("newProducts",products.filter(p=>p.is_new_arrival===true||section(p).includes("new arrival")),"New Arrivals जल्द दिखाई देंगे।");
+render("crystalProducts",products.filter(p=>section(p).includes("crystal")&&!section(p).includes("mag")),"Crystal Clear products will appear when published in the Admin Panel.");
+render("designerProducts",products.filter(p=>section(p).includes("designer")),"Designer products will appear when published in the Admin Panel.");
+render("newProducts",products.filter(p=>p.is_new_arrival===true||section(p).includes("new arrival")),"New Arrivals will appear soon.");
 }
 function updateBag(){
 $("bagCount").textContent=bag.reduce((n,x)=>n+x.qty,0);
