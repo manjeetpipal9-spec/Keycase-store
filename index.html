@@ -185,6 +185,6 @@ async function checkPaymentReturn(){
  }catch(err){$('checkoutMessage').textContent=err.message||String(err);}
 }
 saveCart();checkPaymentReturn();
-Promise.all([loadBanners(),loadProducts()]);
+Promise.all([loadBanners(),loadProducts(),loadCategories()]);
 })();
 </script></body></html>
