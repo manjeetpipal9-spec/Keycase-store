@@ -223,7 +223,7 @@ $("addColorVariant").onclick=async()=>{
  let groupId=$("pDesignGroup").value;
  if(!groupId){groupId=crypto.randomUUID();const {error}=await db.from("products").update({design_group_id:groupId,is_primary_variant:true}).eq("id",currentId);if(error){note("Design group update failed: "+error.message,"error");return;}$("pDesignGroup").value=groupId;}
  const v={name:$("pName").value,brand:$("pBrand").value,category:$("pCategory").value,section:$("pSection").value,models:$("pModels").value,price:$("pPrice").value,mrp:$("pMrp").value,stock:$("pStock").value,description:$("pDescription").value};
- $("productId").value="";$("pDesignGroup").value=groupId;$("pColor").value="";$("pPrimary").checked=false;$("pName").value=v.name;$("pBrand").value=v.brand;$("pCategory").value=v.category;$("pSection").value=v.section;$("pModels").value=v.models;$("pPrice").value=v.price;$("pMrp").value=v.mrp;$("pStock").value=v.stock;$("pDescription").value=v.description;$("pImageUrls").value="";$("pFiles").value="";$("pFeatured").checked=false;$("pNew").checked=false;
+ $("productId").value="";$("pDesignGroup").value=groupId;$("pSku").value="";$("pColor").value="";$("pPrimary").checked=false;$("pName").value=v.name;$("pBrand").value=v.brand;$("pCategory").value=v.category;$("pSection").value=v.section;$("pModels").value=v.models;$("pPrice").value=v.price;$("pMrp").value=v.mrp;$("pStock").value=v.stock;$("pDescription").value=v.description;$("pImageUrls").value="";$("pFiles").value="";$("pFeatured").checked=false;$("pNew").checked=false;
  $("productHeading").textContent="Add Color Variant — "+v.name;$("addColorVariant").classList.add("hidden");$("productCard").scrollIntoView({behavior:"smooth"});
 };
 
