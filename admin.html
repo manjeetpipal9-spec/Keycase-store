@@ -49,7 +49,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <div class="tabs">
 <button class="active" data-tab="products">Products</button>
 <button data-tab="categories">Categories</button>
-<button data-tab="banners">Homepage Slider</button>
+<button data-tab="banners">Top + Bottom Sliders</button>
 <button data-tab="collections">Designer / DIY / New Arrivals</button>
 <button data-tab="orders">Orders</button>
 <button data-tab="reviews">Reviews</button>
@@ -98,12 +98,12 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 </section>
 
 <section id="tab-banners" class="panel">
-<div class="card"><h2 id="bannerHeading">Add Homepage Slider Image</h2>
+<div class="card"><h2 id="bannerHeading">Add Slider Media</h2>
 <form id="bannerForm"><input type="hidden" id="bannerId"><input type="hidden" id="bannerOldUrl">
-<div class="grid"><div><label>Title</label><input id="bTitle"></div><div><label>Subtitle</label><input id="bSubtitle"></div><div><label>Banner Image *</label><input id="bFile" type="file" accept="image/*"></div><div><label>Target URL</label><input id="bTarget" type="url"></div><div><label>Display Order</label><input id="bSort" type="number" value="0"></div></div>
+<div class="grid"><div><label>Slider Placement *</label><select id="bPlacement"><option value="top">Top Slider</option><option value="bottom">Bottom Slider</option></select></div><div><label>Media Type *</label><select id="bMediaType"><option value="image">Photo / GIF</option><option value="video">Short Video</option></select></div><div><label>Title</label><input id="bTitle"></div><div><label>Subtitle</label><input id="bSubtitle"></div><div><label>Upload Photo / GIF / Video *</label><input id="bFile" type="file" accept="image/*,video/mp4,video/webm"></div><div><label>Target URL</label><input id="bTarget" type="text" placeholder="#crystal-case / #new-arrivals / #designer / #premium"></div><div><label>Display Order</label><input id="bSort" type="number" value="0"></div></div>
 <div class="checks"><label><input id="bActive" type="checkbox" checked> Published</label></div>
 <div class="actions"><button id="saveBannerBtn">Save Banner</button><button type="button" class="secondary" id="clearBanner">Clear</button></div></form></div>
-<div class="card"><h2>Homepage Slider Banners</h2><div class="muted">आप जरूरत के अनुसार कई images जोड़ सकते हैं।</div><div class="tablewrap"><table><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bannersList"></tbody></table></div></div>
+<div class="card"><h2>Top & Bottom Slider Media</h2><div class="muted">दोनों sliders का content अलग-अलग manage करें। Photo, GIF या MP4/WebM video जोड़ें, display order बदलें, edit/delete करें और Published से live करें। Limit: image/GIF 8 MB, video 40 MB प्रति file।</div><div class="tablewrap"><table><thead><tr><th>Image</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead><tbody id="bannersList"></tbody></table></div></div>
 </section>
 
 <section id="tab-collections" class="panel">
@@ -152,6 +152,7 @@ async function uploadImage(file,folder){
  if(error)throw new Error("Image upload failed: "+error.message);
  return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
+async function uploadSliderMedia(file,folder,kind){if(!file)return null;const isVideo=kind==="video",limit=isVideo?40*1024*1024:8*1024*1024;if(file.size>limit)throw new Error(isVideo?"एक video अधिकतम 40 MB की होनी चाहिए।":"एक image/GIF अधिकतम 8 MB की होनी चाहिए।");if(isVideo&&!["video/mp4","video/webm"].includes(file.type))throw new Error("Video के लिए MP4 या WebM file चुनें।");if(!isVideo&&!file.type.startsWith("image/"))throw new Error("Photo या GIF file चुनें।");const ext=(file.name.split(".").pop()||(isVideo?"mp4":"jpg")).toLowerCase().replace(/[^a-z0-9]/g,"")||(isVideo?"mp4":"jpg");const path=folder+"/"+Date.now()+"-"+crypto.randomUUID()+"."+ext;const {error}=await db.storage.from(BUCKET).upload(path,file,{upsert:false,contentType:file.type});if(error)throw new Error("Media upload failed: "+error.message);return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;}
 async function showApp(user){
  await requireAdmin(user);currentUser=user;
  $("adminEmail").textContent=user.email||"Admin";
@@ -251,26 +252,11 @@ $("categoryForm").onsubmit=async e=>{
 };
 $("clearCategory").onclick=clearCategory;
 
-async function loadBanners(){
- const {data,error}=await db.from("store_banners").select("*").order("sort_order",{ascending:true});
- if(error){$("bannersList").innerHTML=`<tr><td colspan="5">${esc(error.message)}</td></tr>`;return;}
- banners=data||[];
- $("bannersList").innerHTML=banners.map(b=>`<tr><td><img class="thumb" src="${esc(b.image_url)}"></td><td>${esc(b.title||"")}</td><td>${b.sort_order}</td><td>${b.is_active?"Published":"Hidden"}</td><td><button class="secondary" data-bedit="${b.id}">Edit</button> <button class="danger" data-bdel="${b.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="5">No banners.</td></tr>';
- $("bannersList").querySelectorAll("[data-bedit]").forEach(b=>b.onclick=()=>editBanner(banners.find(x=>x.id===b.dataset.bedit)));
- $("bannersList").querySelectorAll("[data-bdel]").forEach(b=>b.onclick=()=>deleteBanner(b.dataset.bdel));
-}
-function clearBanner(){$("bannerForm").reset();$("bannerId").value="";$("bannerOldUrl").value="";$("bSort").value=0;$("bActive").checked=true;$("bFile").required=true;$("bannerHeading").textContent="Add Homepage Slider Image";}
-function editBanner(b){if(!b)return;$("bannerId").value=b.id;$("bannerOldUrl").value=b.image_url||"";$("bTitle").value=b.title||"";$("bSubtitle").value=b.subtitle||"";$("bTarget").value=b.target_url||"";$("bSort").value=b.sort_order||0;$("bActive").checked=b.is_active!==false;$("bFile").required=false;$("bannerHeading").textContent="Edit Banner";}
-async function deleteBanner(id){if(!confirm("Banner delete करें?"))return;const {error}=await db.from("store_banners").delete().eq("id",id);if(error){note(error.message,"error");return;}note("Banner deleted.","success");await loadBanners();}
-$("bannerForm").onsubmit=async e=>{
- e.preventDefault();const btn=$("saveBannerBtn");btn.disabled=true;
- try{
-  let image=$("bannerOldUrl").value;const file=$("bFile").files[0];if(file)image=await uploadImage(file,"banners");if(!image)throw new Error("Banner image चुनें।");
-  const payload={title:$("bTitle").value.trim()||null,subtitle:$("bSubtitle").value.trim()||null,image_url:image,target_url:$("bTarget").value.trim()||null,sort_order:Number($("bSort").value||0),is_active:$("bActive").checked};
-  const id=$("bannerId").value;const r=id?await db.from("store_banners").update(payload).eq("id",id):await db.from("store_banners").insert(payload);
-  if(r.error)throw r.error;clearBanner();note("Banner save हो गया।","success");await loadBanners();
- }catch(err){note(err.message||String(err),"error");}finally{btn.disabled=false;}
-};
+async function loadBanners(){const {data,error}=await db.from("store_banners").select("*").order("placement",{ascending:true}).order("sort_order",{ascending:true});if(error){$("bannersList").innerHTML=`<tr><td colspan="6">${esc(error.message)}</td></tr>`;return;}banners=data||[];$("bannersList").innerHTML=banners.map(b=>`<tr><td>${b.media_type==="video"?'<video class="thumb" src="'+esc(b.image_url)+'" muted playsinline></video>':'<img class="thumb" src="'+esc(b.image_url)+'">'}</td><td>${esc(b.placement==="bottom"?"Bottom":"Top")} · ${esc(b.media_type||"image")}</td><td>${esc(b.title||"")}</td><td>${b.sort_order}</td><td>${b.is_active?"Published":"Hidden"}</td><td><button class="secondary" data-bedit="${b.id}">Edit</button> <button class="danger" data-bdel="${b.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="6">No slider media yet.</td></tr>';$("bannersList").querySelectorAll("[data-bedit]").forEach(b=>b.onclick=()=>editBanner(banners.find(x=>x.id===b.dataset.bedit)));$("bannersList").querySelectorAll("[data-bdel]").forEach(b=>b.onclick=()=>deleteBanner(b.dataset.bdel));}
+function clearBanner(){$("bannerForm").reset();$("bannerId").value="";$("bannerOldUrl").value="";$("bSort").value=0;$("bPlacement").value="top";$("bMediaType").value="image";$("bActive").checked=true;$("bFile").required=true;$("bannerHeading").textContent="Add Slider Media";}
+function editBanner(b){if(!b)return;$("bannerId").value=b.id;$("bannerOldUrl").value=b.image_url||"";$("bPlacement").value=b.placement||"top";$("bMediaType").value=b.media_type||"image";$("bTitle").value=b.title||"";$("bSubtitle").value=b.subtitle||"";$("bTarget").value=b.target_url||"";$("bSort").value=b.sort_order||0;$("bActive").checked=b.is_active!==false;$("bFile").required=false;$("bannerHeading").textContent="Edit Slider Media";}
+async function deleteBanner(id){if(!confirm("Slider media delete करें?"))return;const {error}=await db.from("store_banners").delete().eq("id",id);if(error){note(error.message,"error");return;}note("Slider media deleted.","success");await loadBanners();}
+$("bannerForm").onsubmit=async e=>{e.preventDefault();const btn=$("saveBannerBtn");btn.disabled=true;try{const kind=$("bMediaType").value;let media=$("bannerOldUrl").value;const file=$("bFile").files[0];if(file)media=await uploadSliderMedia(file,"banners",kind);if(!media)throw new Error("Photo/GIF/Video चुनें।");const payload={placement:$("bPlacement").value,media_type:kind,title:$("bTitle").value.trim()||null,subtitle:$("bSubtitle").value.trim()||null,image_url:media,target_url:$("bTarget").value.trim()||null,sort_order:Number($("bSort").value||0),is_active:$("bActive").checked};const id=$("bannerId").value;const r=id?await db.from("store_banners").update(payload).eq("id",id):await db.from("store_banners").insert(payload);if(r.error)throw r.error;clearBanner();note("Slider media save हो गया।","success");await loadBanners();}catch(err){note(err.message||String(err),"error");}finally{btn.disabled=false;}};
 $("clearBanner").onclick=clearBanner;
 
 async function loadCollections(){
