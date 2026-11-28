@@ -50,7 +50,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <button class="active" data-tab="products">Products</button>
 <button data-tab="categories">Categories</button>
 <button data-tab="banners">Homepage Slider</button>
-<button data-tab="collections">Designer / New Arrivals / DIY</button>
+<button data-tab="collections">Designer / New Arrivals / Premium</button>
 <button data-tab="offers">Offers & Discounts</button>
 <button data-tab="orders">Orders</button>
 <button data-tab="customers">Customers</button>
@@ -68,7 +68,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <div><label>SKU</label><input id="pSku"></div>
 <div><label>Phone Brand</label><input id="pBrand" placeholder="Apple, Samsung, Vivo..."></div>
 <div><label>Category / Cover Type</label><input id="pCategory" placeholder="Crystal Clear, Designer..."></div>
-<div><label>Section</label><select id="pSection"><option>Crystal Clear</option><option>Crystal Clear with Mag</option><option>Designer</option><option>New Arrivals</option><option>DIY</option></select></div>
+<div><label>Section</label><select id="pSection"><option>Crystal Clear</option><option>Crystal Clear with Mag</option><option>Designer</option><option>New Arrivals</option><option value="DIY">Premium</option></select></div>
 <div><label>Existing Design चुनें (नया रंग जोड़ने के लिए)</label><select id="pDesignPreset"><option value="">New design / कोई नहीं</option></select><div class="muted">पहले से बने Designer design में नया colour जोड़ने के लिए यहाँ design चुनें।</div></div>
 <div><label>Design Group ID (same for all colours)</label><input id="pDesignGroup" placeholder="पहले variant पर auto-generate होगा"></div>
 <div><label>Colour / Variant Name</label><input id="pVariantColor" placeholder="Black, Blue, Transparent..."></div>
@@ -116,7 +116,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <section id="tab-collections" class="panel">
 <div class="card"><h2 id="collectionHeading">Add Designer / New Arrivals Card</h2>
 <form id="collectionForm"><input type="hidden" id="collectionId"><input type="hidden" id="collectionOldImage">
-<div class="grid"><div><label>Section *</label><select id="colSection"><option value="designer">Designer</option><option value="new_arrivals">New Arrivals</option><option value="diy">DIY</option></select></div><div><label>Title *</label><input id="colTitle" required></div><div><label>Subtitle</label><input id="colSubtitle"></div><div><label>Image *</label><input id="colFile" type="file" accept="image/*"></div><div><label>Display Order</label><input id="colSort" type="number" value="0"></div></div>
+<div class="grid"><div><label>Section *</label><select id="colSection"><option value="designer">Designer</option><option value="new_arrivals">New Arrivals</option><option value="diy">Premium</option></select></div><div><label>Title *</label><input id="colTitle" required></div><div><label>Subtitle</label><input id="colSubtitle"></div><div><label>Image *</label><input id="colFile" type="file" accept="image/*"></div><div><label>Display Order</label><input id="colSort" type="number" value="0"></div></div>
 <div class="actions"><button>Save Collection Card</button><button type="button" class="secondary" id="clearCollection">Clear</button></div></form></div>
 <div class="card"><h2>Designer & New Arrivals Images</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Section</th><th>Title</th><th>Order</th><th>Actions</th></tr></thead><tbody id="collectionsList"></tbody></table></div></div>
 </section>
