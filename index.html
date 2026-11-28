@@ -83,7 +83,7 @@ main{max-width:1500px;margin:auto;padding:0 clamp(14px,4.5vw,66px)}
 const SUPABASE_URL='https://nmfngctyvkhpaqngbuyw.supabase.co';
 const SUPABASE_KEY='sb_publishable_iPQiqgg3q-bFS6DbfCD9Zw_EJtt388B';
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);let products=[],slideIndex=0,slideTimer=null;
+const $=id=>document.getElementById(id);let products=[];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=v=>'₹'+Number(v||0).toLocaleString('en-IN');
 function imageOf(p){return Array.isArray(p.image_urls)?p.image_urls.find(Boolean)||'':p.image_url||''}
