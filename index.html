@@ -46,9 +46,13 @@ main{max-width:1500px;margin:auto;padding:0 clamp(14px,4.5vw,66px)}
 @media(max-width:600px){.home-category-section{margin:18px 0 25px}.home-folder{flex-basis:42vw}.home-folder-photo{height:clamp(155px,48vw,205px)}}
 
 
-/* Keep the top hero banner compact so the collection folders remain visible */
-#bannerSlider{aspect-ratio:16/6;min-height:0;max-height:420px}
-@media(max-width:650px){#bannerSlider{aspect-ratio:16/7;min-height:0;max-height:190px}}
+/* Premium top photo slider only; keep every lower section untouched */
+#bannerSlider{height:clamp(210px,34vw,430px);aspect-ratio:auto;min-height:0;max-height:none;background:#eee9e1;border-radius:0 0 18px 18px;box-shadow:0 8px 24px #00000012}
+#bannerSlider .slide img{object-fit:cover;object-position:center}
+#bannerSlider .slide-control{width:40px;height:40px;background:#ffffffdf;box-shadow:0 2px 12px #0002}
+#bannerSlider .dots{bottom:14px;right:50%;transform:translateX(50%);padding:7px 11px;border-radius:30px;background:#ffffffa8;backdrop-filter:blur(8px)}
+#bannerSlider .dots button.active{background:#171717}
+@media(max-width:650px){#bannerSlider{height:170px;border-radius:0 0 13px 13px}#bannerSlider .slide-control{width:32px;height:32px;font-size:20px}.slider#bannerSlider .prev{left:10px}.slider#bannerSlider .next{right:10px}#bannerSlider .dots{bottom:9px}}
 </style></head>
 <body>
 <div class="promo-ribbon">PREMIUM PHONE COVERS &nbsp; · &nbsp; DESIGNED FOR YOUR DEVICE &nbsp; · &nbsp; SECURE CHECKOUT</div>
