@@ -75,7 +75,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <div><label>Compatible Phone Models (comma separated)</label><input id="pModels" placeholder="iPhone 16, iPhone 16 Pro"></div>
 <div><label>Selling Price ₹ *</label><input id="pPrice" type="number" min="0" step=".01" required></div>
 <div><label>MRP ₹</label><input id="pMrp" type="number" min="0" step=".01"></div>
-<div><label>Stock Quantity</label><input id="pStock" type="number" min="0" value="0"></div>
+<div><label>Available Quantity (स्टॉक में कितने पीस हैं) *</label><input id="pStock" type="number" min="0" step="1" value="0" required placeholder="जैसे 25"><div class="muted">यहाँ कुल उपलब्ध पीस डालें। हर colour variant का stock अलग रहेगा।</div></div>
 <div><label>Display Order</label><input id="pSort" type="number" value="0"></div>
 </div>
 <label>Description</label><textarea id="pDescription"></textarea>
@@ -92,7 +92,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <div class="actions"><button id="saveProductBtn">Save Product</button><button type="button" class="secondary" id="clearProduct">Clear</button></div>
 </form>
 </div>
-<div class="card"><h2>All Products</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Name / Brand</th><th>Section</th><th>Colour / Design Group</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div></div>
+<div class="card"><h2>All Products</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Name / Brand</th><th>Section</th><th>Colour / Design Group</th><th>Price</th><th>Available Qty</th><th>Status</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div></div>
 </section>
 
 <section id="tab-categories" class="panel">
@@ -190,7 +190,7 @@ async function loadProducts(){
  products=data||[];
  const groups=new Map();for(const p of products){if(p.design_group_id&&!groups.has(p.design_group_id))groups.set(p.design_group_id,p);}
  $("pDesignPreset").innerHTML='<option value="">New design / कोई नहीं</option>'+[...groups.entries()].map(([id,p])=>`<option value="${esc(id)}">${esc(p.name||p.variant_color||"Design")} · ${esc(p.brand||"")} · ${esc(id.slice(0,8))}</option>`).join("");
- $("productsList").innerHTML=products.map(p=>`<tr><td>${p.image_urls?.[0]?`<img class="thumb" src="${esc(p.image_urls[0])}">`:"—"}</td><td><b>${esc(p.name)}</b><div class="muted">${esc(p.brand||"")}</div></td><td>${esc(p.section||"")}</td><td>${esc(p.variant_color||"—")}<div class="muted">${esc(p.design_group_id||"")}</div></td><td>${money(p.price)}</td><td>${p.stock_quantity??p.stock??0}</td><td>${p.is_active??p.active?"Published":"Hidden"}</td><td><button class="secondary" data-pedit="${p.id}">Edit</button> <button class="danger" data-pdel="${p.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="8">No products yet.</td></tr>';
+ $("productsList").innerHTML=products.map(p=>`<tr><td>${p.image_urls?.[0]?`<img class="thumb" src="${esc(p.image_urls[0])}">`:"—"}</td><td><b>${esc(p.name)}</b><div class="muted">${esc(p.brand||"")}</div></td><td>${esc(p.section||"")}</td><td>${esc(p.variant_color||"—")}<div class="muted">${esc(p.design_group_id||"")}</div></td><td>${money(p.price)}</td><td>${p.stock_quantity??p.stock??0} pcs</td><td>${p.is_active??p.active?"Published":"Hidden"}</td><td><button class="secondary" data-pedit="${p.id}">Edit</button> <button class="danger" data-pdel="${p.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="8">No products yet.</td></tr>';
  $("productsList").querySelectorAll("[data-pedit]").forEach(b=>b.onclick=()=>editProduct(products.find(p=>String(p.id)===b.dataset.pedit)));
  $("productsList").querySelectorAll("[data-pdel]").forEach(b=>b.onclick=()=>deleteProduct(b.dataset.pdel));
 }
