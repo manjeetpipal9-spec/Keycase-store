@@ -115,7 +115,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 </section>
 
 <section id="tab-orders" class="panel">
-<div class="card"><h2>Customer Orders</h2><div class="tablewrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Phone</th><th>Amount</th><th>Payment</th><th>Status</th><th>Update</th></tr></thead><tbody id="ordersList"></tbody></table></div></div>
+<div class="card"><h2>Customer Orders</h2><div class="tablewrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Phone</th><th>Delivery Address</th><th>Items</th><th>Amount</th><th>Payment</th><th>Status</th><th>Update</th></tr></thead><tbody id="ordersList"></tbody></table></div></div>
 </section>
 
 <section id="tab-reviews" class="panel">
@@ -285,9 +285,9 @@ $("collectionForm").onsubmit=async e=>{
 $("clearCollection").onclick=clearCollection;
 
 async function loadOrders(){
- const {data,error}=await db.from("orders").select("id,customer_name,phone,total,status,payment_status,created_at").order("created_at",{ascending:false}).limit(200);
- if(error){$("ordersList").innerHTML=`<tr><td colspan="7">${esc(error.message)}</td></tr>`;return;}
- $("ordersList").innerHTML=(data||[]).map(o=>`<tr><td>#${o.id}<div class="muted">${o.created_at?new Date(o.created_at).toLocaleString("en-IN"):""}</div></td><td>${esc(o.customer_name)}</td><td>${esc(o.phone)}</td><td>${money(o.total)}</td><td>${esc(o.payment_status)}</td><td>${esc(o.status)}</td><td><select data-order="${o.id}"><option ${o.status==="New"?"selected":""}>New</option><option ${o.status==="Processing"?"selected":""}>Processing</option><option ${o.status==="Shipped"?"selected":""}>Shipped</option><option ${o.status==="Delivered"?"selected":""}>Delivered</option><option ${o.status==="Cancelled"?"selected":""}>Cancelled</option></select></td></tr>`).join("")||'<tr><td colspan="7">No orders.</td></tr>';
+ const {data,error}=await db.from("orders").select("id,customer_name,phone,shipping_address,items,total,status,payment_status,created_at").order("created_at",{ascending:false}).limit(200);
+ if(error){$("ordersList").innerHTML=`<tr><td colspan="9">${esc(error.message)}</td></tr>`;return;}
+ $("ordersList").innerHTML=(data||[]).map(o=>`<tr><td>#${o.id}<div class="muted">${o.created_at?new Date(o.created_at).toLocaleString("en-IN"):""}</div></td><td>${esc(o.customer_name)}</td><td>${esc(o.phone)}</td><td>${esc(o.shipping_address||"")}</td><td>${esc(Array.isArray(o.items)?o.items.map(x=>`${x.name||x.product_id} × ${x.quantity}`).join(", "):"")}</td><td>${money(o.total)}</td><td>${esc(o.payment_status)}</td><td>${esc(o.status)}</td><td><select data-order="${o.id}"><option ${o.status==="New"?"selected":""}>New</option><option ${o.status==="Processing"?"selected":""}>Processing</option><option ${o.status==="Shipped"?"selected":""}>Shipped</option><option ${o.status==="Delivered"?"selected":""}>Delivered</option><option ${o.status==="Cancelled"?"selected":""}>Cancelled</option></select></td></tr>`).join("")||'<tr><td colspan="9">No orders.</td></tr>';
  $("ordersList").querySelectorAll("[data-order]").forEach(s=>s.onchange=async()=>{const {error}=await db.from("orders").update({status:s.value}).eq("id",s.dataset.order);if(error){note("Order update error: "+error.message,"error");return;}note("Order status updated.","success");});
 }
 async function loadReviews(){
