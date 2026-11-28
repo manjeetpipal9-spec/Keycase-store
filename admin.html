@@ -195,6 +195,7 @@ $("productForm").onsubmit=async e=>{
   const models=$("pModels").value.split(",").map(x=>x.trim()).filter(Boolean);
   const stock=Math.max(0,Number($("pStock").value||0));
   const active=$("pActive").checked;
+  const id=$("productId").value;
   const groupId=$("pDesignGroup").value||crypto.randomUUID();
   const colorName=$("pColor").value.trim();
   const payload={
@@ -210,7 +211,6 @@ $("productForm").onsubmit=async e=>{
   };
   if(!payload.name||!Number.isFinite(payload.price)||payload.price<0)throw new Error("Product name और सही price भरें।");
   if(!id&&!colorName)throw new Error("हर नई फोटो के लिए Color Name भरें।");
-  const id=$("productId").value;
   const result=id?await db.from("products").update(payload).eq("id",id):await db.from("products").insert(payload);
   if(result.error)throw result.error;
   clearProduct();$("pFiles").value="";note("Product / color variant save हो गया।","success");await loadProducts();
