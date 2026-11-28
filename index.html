@@ -98,21 +98,105 @@ header{padding:13px clamp(15px,5vw,72px);background:#fff;box-shadow:0 5px 22px #
 @media(max-width:760px){.kc-nav{order:3;width:100%;overflow:auto;justify-content:space-between;padding:8px 0 2px;font-size:9px}.kc-brand-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{min-height:auto}.slider{aspect-ratio:16/9;min-height:180px}.slide-caption{max-width:82%;padding:10px 12px}.slide-caption p{font-size:10px}.slide-caption .banner-cta{padding:7px 11px;font-size:9px}.kc-offer b{font-size:22px}}
 @media(max-width:420px){.kc-offer{padding:13px 5px}.kc-offer span{font-size:8px}.kc-brand{font-size:11px;padding:12px 3px}#deviceFinder{padding:14px}.kc-model-row select,.kc-model-row button{width:100%}}
 </style>
-</head>
+<style>
+/* Rezoni-inspired editorial storefront treatment for KEYCASE — original branding and existing commerce logic retained */
+:root{--kc-black:#111;--kc-muted:#777;--kc-accent:#c7a36a;--kc-border:#e8e5e1;--kc-bg:#fff}
+html{scroll-behavior:smooth;scroll-padding-top:100px}
+body{background:#fff;color:#151515;font-family:Arial,Helvetica,sans-serif}
+.promo-ribbon{height:34px;display:flex;align-items:center;justify-content:center;background:#111;color:#fff;font-size:10px;letter-spacing:1.35px;font-weight:700;padding:6px 12px}
+.kc-header{height:auto;min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:26px;padding:14px clamp(18px,5vw,76px);position:sticky;top:0;background:#fff;z-index:30;border-bottom:1px solid #eee;box-shadow:0 3px 14px #00000008}
+.kc-header .logo{font-size:24px;letter-spacing:1.8px;white-space:nowrap}
+.kc-nav{display:flex;align-items:center;justify-content:center;gap:clamp(12px,2vw,30px);width:auto;overflow:visible;padding:0;font-size:10px;letter-spacing:1px}
+.kc-nav>a,.kc-nav-group>a{white-space:nowrap;font-weight:800;color:#171717}
+.kc-nav-group{position:relative;padding:15px 0}
+.kc-nav-group>a span{font-size:13px;color:#9a7a4d;margin-left:3px}
+.kc-mega{display:none;position:absolute;top:100%;left:-18px;min-width:230px;padding:20px;background:#fff;border:1px solid #eee;box-shadow:0 16px 36px #00000018;z-index:40;text-transform:none;letter-spacing:0}
+.kc-mega a{display:block;padding:9px 0;font-size:12px;font-weight:700;border-bottom:1px solid #f2f2f2}
+.kc-mega p{font-size:12px;line-height:1.6;color:#777}
+.kc-mega strong{font:22px Georgia,serif}
+.kc-nav-group:hover .kc-mega,.kc-nav-group:focus-within .kc-mega{display:block}
+.kc-header-actions{display:flex;align-items:center;gap:15px;white-space:nowrap}
+.kc-search-link{font-size:25px;font-weight:300}
+.kc-bag{border:0;background:#111;color:#fff;padding:12px 16px;font-size:10px;font-weight:800;letter-spacing:1px;cursor:pointer}
+.kc-bag span{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;margin-left:5px;border-radius:50%;background:#fff;color:#111}
+main{max-width:1500px;padding:0 clamp(14px,4vw,64px)}
+#bannerSlider{width:100%;max-width:none;margin:0 calc(clamp(14px,4vw,64px)*-1) 28px;max-height:590px;min-height:250px;aspect-ratio:16/6;border-radius:0;box-shadow:none;background:#eee}
+#bannerSlider .slide img{object-fit:cover}
+#bannerSlider .slide-caption{left:7%;bottom:12%;max-width:min(58%,620px);padding:0;background:transparent;box-shadow:none;backdrop-filter:none}
+#bannerSlider .slide-caption h2{font:normal clamp(28px,5vw,58px)/1.05 Georgia,serif;letter-spacing:-.7px;margin:0 0 10px}
+#bannerSlider .slide-caption p{font-size:14px;line-height:1.6}
+#bannerSlider .slide-caption .banner-cta{display:inline-block;background:#fff;color:#111;border-radius:0;padding:14px 24px;margin-top:20px;font-size:10px;letter-spacing:1px}
+#bannerSlider .slide-control{width:42px;height:42px;border-radius:50%;background:#ffffffd9}
+.hero{padding:10px 0 22px;margin:0;background:#fff;border-radius:0;box-shadow:none;color:#111;text-align:center}
+.hero small{color:#9a794e;font-size:10px;letter-spacing:2px}
+.hero h1{font:normal clamp(27px,3.4vw,42px)/1.1 Georgia,serif;letter-spacing:-.5px;margin:8px 0}
+.hero p{margin:0 auto;color:#777;font-size:13px;max-width:650px}
+.kc-trust-strip{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #eee;border-bottom:1px solid #eee;margin:10px 0 42px}
+.kc-trust-item{text-align:center;padding:17px 10px;font-size:10px;font-weight:800;letter-spacing:1px}
+.kc-trust-item small{display:block;color:#777;font-size:10px;font-weight:400;letter-spacing:0;margin-top:5px}
+.kc-section,.kc-variant-section,#categoriesSection,#newArrivalsSection,#designerSection,#diySection,#reviewsSection{margin:42px 0}
+.kc-section-head,.section-head{display:flex;justify-content:space-between;align-items:end;border:0;margin:0 0 18px;padding:0}
+.kc-section-head h2,.section-head h2{font:normal clamp(26px,3vw,38px)/1.1 Georgia,serif;letter-spacing:-.5px;margin:0}
+.kc-section-head p{font-size:12px;color:#777;margin:7px 0 0}
+.section-head small{font-size:10px;color:#888;letter-spacing:.6px}
+#bestSellers,#newArrivals,#designer,#diy,#categories,#crystalClearProducts{display:flex;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:2px 1px 14px;scrollbar-width:thin}
+#bestSellers>.card,#newArrivals>.card,#designer>.card,#diy>.card,#crystalClearProducts>.card{flex:0 0 clamp(190px,22%,260px);scroll-snap-align:start}
+#categories>.collection-card,#newArrivals>.collection-card,#designer>.collection-card,#diy>.collection-card{flex:0 0 clamp(210px,24%,285px);scroll-snap-align:start}
+.card,.collection-card{border:1px solid #eee;border-radius:0;box-shadow:none;background:#fff;transition:box-shadow .2s,transform .2s}
+.card:hover,.collection-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px #00000012}
+.photo,.collection-photo{aspect-ratio:1/1;height:auto;background:#f5f5f5}
+.info{padding:13px}
+.info small{font-size:9px;letter-spacing:1.1px;color:#888}
+.info h3{font-size:13px;font-weight:600;min-height:34px}
+.price{font-size:17px;margin:9px 0 12px}
+.add,.collection-shop{border-radius:0;background:#111;color:#fff;font-size:10px;letter-spacing:.7px;padding:13px 9px}
+.collection-info{padding:14px}
+.collection-info strong{font:19px Georgia,serif}
+.collection-shop{width:100%;margin-top:8px}
+#deviceFinder{background:#f7f6f3;border:0;padding:26px;margin:44px 0}
+.kc-brand{border-radius:0;background:#fff;border-color:#e4e1dc}
+.kc-brand.active,.kc-brand:hover{background:#111;color:#fff}
+.kc-variant-section{background:#f7f6f3;border:0;padding:26px;margin:44px 0}
+.kc-variant-tab{border-radius:0;font-size:10px;letter-spacing:1px}
+.toolbar input,.toolbar select{border-radius:0;background:#fff;border:1px solid #ddd}
+#products{margin-bottom:48px}
+.footer{border-radius:0;background:#111;margin:55px calc(clamp(14px,4vw,64px)*-1) 0;padding:36px 20px}
+@media(max-width:900px){.kc-header{gap:14px;flex-wrap:wrap}.kc-nav{order:3;width:100%;justify-content:flex-start;overflow-x:auto;gap:22px;padding:8px 0 2px}.kc-nav-group{padding:4px 0}.kc-mega{display:none!important}.kc-header-actions{margin-left:auto}#bannerSlider{aspect-ratio:16/8;min-height:210px}.kc-trust-item{font-size:9px}}
+@media(max-width:600px){.promo-ribbon{font-size:8px;letter-spacing:.8px;height:30px}.kc-header{min-height:66px;padding:10px 15px;gap:8px}.kc-header .logo{font-size:20px}.kc-nav{gap:19px;font-size:9px}.kc-nav>a,.kc-nav-group>a{font-size:9px}.kc-search-link{font-size:22px}.kc-bag{padding:10px 11px;font-size:9px}main{padding:0 13px}#bannerSlider{margin:0 -13px 22px;aspect-ratio:4/5;min-height:250px;max-height:440px}#bannerSlider .slide img{object-position:center}#bannerSlider .slide-caption{left:6%;bottom:9%;max-width:83%}#bannerSlider .slide-caption h2{font-size:30px}#bannerSlider .slide-caption p{font-size:11px}#bannerSlider .slide-caption .banner-cta{padding:11px 16px;margin-top:13px;font-size:9px}.hero{padding:8px 0 20px}.hero h1{font-size:29px}.hero p{font-size:12px}.kc-trust-strip{margin:5px 0 32px}.kc-trust-item{padding:13px 5px;font-size:8px}.kc-trust-item small{font-size:8px}.kc-section,.kc-variant-section,#categoriesSection,#newArrivalsSection,#designerSection,#diySection,#reviewsSection{margin:32px 0}.kc-section-head h2,.section-head h2{font-size:27px}#bestSellers>.card,#newArrivals>.card,#designer>.card,#diy>.card,#crystalClearProducts>.card{flex-basis:68vw}#categories>.collection-card,#newArrivals>.collection-card,#designer>.collection-card,#diy>.collection-card{flex-basis:72vw}.kc-variant-section,#deviceFinder{padding:17px;margin:30px 0}.kc-brand-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.toolbar{grid-template-columns:1fr}}
+</style></head>
 <body>
-<div class="promo-ribbon">PREMIUM PHONE COVERS · FIND YOUR STYLE · SECURE CHECKOUT</div><header><a class="logo" href="/">KEYCASE<span>.</span>STORE</a><nav class="kc-nav"><a href="#deviceFinder">Shop by Phone</a><a href="#categoriesSection">Collections</a><a href="#newArrivalsSection">New Arrivals</a><a href="#designerSection">Designer</a><a href="#diySection">DIY</a><a href="#products">Shop All</a></nav><div style="display:flex;align-items:center;gap:10px"><button id="cartOpen" style="border:0;background:#201d19;color:white;padding:10px 12px;cursor:pointer;border-radius:8px">BAG (<span id="cartCount">0</span>)</button></div></header>
+<div class="promo-ribbon">KEYCASE.STORE&nbsp; · &nbsp;PREMIUM PHONE COVERS&nbsp; · &nbsp;MAGSAFE & DESIGNER STYLES&nbsp; · &nbsp;SECURE CASHFREE CHECKOUT</div>
+<header class="kc-header">
+  <a class="logo" href="/">KEYCASE<span>.</span>STORE</a>
+  <nav class="kc-nav">
+    <div class="kc-nav-group"><a href="#deviceFinder">SHOP BY PHONE <span>⌄</span></a><div class="kc-mega"><strong>Find your perfect fit</strong><p>Choose your phone brand and exact model to see compatible covers.</p><a href="#deviceFinder">EXPLORE PHONE MODELS →</a></div></div>
+    <div class="kc-nav-group"><a href="#categoriesSection">SHOP COLLECTIONS <span>⌄</span></a><div class="kc-mega"><a href="#bestSellersSection">Best Sellers</a><a href="#newArrivalsSection">New Arrivals</a><a href="#crystalClearSection">Crystal Clear</a><a href="#designerSection">Designer Collection</a><a href="#diySection">DIY / Personalise</a></div></div>
+    <a href="#newArrivalsSection">NEW ARRIVALS</a><a href="#designerSection">DESIGNER</a><a href="#diySection">DIY</a>
+  </nav>
+  <div class="kc-header-actions"><a class="kc-search-link" href="#search" aria-label="Search products">⌕</a><button id="cartOpen" class="kc-bag">BAG <span id="cartCount">0</span></button></div>
+</header>
 <main>
 <section id="bannerSlider" class="slider hidden" aria-label="Store banners"><div id="slides"></div><button class="slide-control prev" id="prev" aria-label="Previous banner">‹</button><button class="slide-control next" id="next" aria-label="Next banner">›</button><div class="dots" id="dots"></div></section>
 <section class="hero"><small>KEYCASE.STORE · PREMIUM PHONE COVERS</small><h1>Style that fits your phone.</h1><p>Explore Crystal Clear, MagSafe, Designer and DIY collections for your exact phone model.</p></section>
-<div id="bannerNotice" class="notice hidden"></div>
-<section id="deviceFinder" class="kc-section"><div class="kc-section-head"><div><h2>Shop by Phone Brand</h2><p>Choose your phone brand, then select your exact model.</p></div></div><div id="brandTiles" class="kc-brand-grid"><div class="empty">Phone brands loading…</div></div><div class="kc-model-row"><select id="deviceModel"><option value="">Select your phone model</option></select><button type="button" id="findModelBtn">FIND COVERS</button></div></section>
-<section id="categoriesSection"><div class="section-head"><h2>Featured Collections</h2><small id="categoryCount">Loading categories…</small></div><div id="categories" class="grid"><div class="empty">Categories लोड हो रही हैं…</div></div></section>
-<section id="crystalClearSection" class="kc-variant-section"><div class="kc-section-head"><div><h2>Crystal Clear Collection</h2><p>Choose the exact Crystal Clear style for your phone.</p></div></div><div class="kc-variant-tabs" role="group" aria-label="Crystal Clear type"><button type="button" class="kc-variant-tab active" data-crystal-filter="without">WITHOUT MAG</button><button type="button" class="kc-variant-tab" data-crystal-filter="with">WITH MAG / MAGSAFE</button></div><div id="crystalClearProducts" class="grid"><div class="empty">Crystal Clear products loading…</div></div></section>
+<div class="kc-trust-strip"><div class="kc-trust-item">SECURE CHECKOUT<small>Protected Cashfree payments</small></div><div class="kc-trust-item">MADE FOR YOUR PHONE<small>Choose your exact device model</small></div><div class="kc-trust-item">STYLE YOUR WAY<small>Crystal Clear · Designer · DIY</small></div></div>
 <section id="bestSellersSection" class="kc-section"><div class="kc-section-head"><div><h2>Best Sellers</h2><p>Customer favourites from KEYCASE.STORE.</p></div></div><div id="bestSellers" class="grid"><div class="empty">Best sellers loading…</div></div></section>
+<section id="categoriesSection"><div class="section-head"><h2>Featured Collections</h2><small id="categoryCount">Loading categories…</small></div><div id="categories" class="grid"><div class="empty">Categories लोड हो रही हैं…</div></div></section>
 <section id="newArrivalsSection"><div class="section-head"><h2>New Arrivals</h2><small id="newArrivalsCount"></small></div><div id="newArrivals" class="grid"><div class="empty">New Arrivals लोड हो रहे हैं…</div></div></section>
+<section id="deviceFinder" class="kc-section"><div class="kc-section-head"><div><h2>Shop by Phone Brand</h2><p>Choose your phone brand, then select your exact model.</p></div></div><div id="brandTiles" class="kc-brand-grid"><div class="empty">Phone brands loading…</div></div><div class="kc-model-row"><select id="deviceModel"><option value="">Select your phone model</option></select><button type="button" id="findModelBtn">FIND COVERS</button></div></section>
+<section id="crystalClearSection" class="kc-variant-section"><div class="kc-section-head"><div><h2>Crystal Clear Collection</h2><p>Choose the exact Crystal Clear style for your phone.</p></div></div><div class="kc-variant-tabs" role="group" aria-label="Crystal Clear type"><button type="button" class="kc-variant-tab active" data-crystal-filter="without">WITHOUT MAG</button><button type="button" class="kc-variant-tab" data-crystal-filter="with">WITH MAG / MAGSAFE</button></div><div id="crystalClearProducts" class="grid"><div class="empty">Crystal Clear products loading…</div></div></section>
 <section id="designerSection"><div class="section-head"><h2>Designer Collection</h2><small id="designerCount"></small></div><div id="designer" class="grid"><div class="empty">Designer collection लोड हो रहा है…</div></div></section>
 <section id="diySection"><div class="section-head"><h2>DIY Collection</h2><small id="diyCount"></small></div><div id="diy" class="grid"><div class="empty">DIY collection लोड हो रहा है…</div></div></section>
 <section id="reviewsSection" class="kc-section"><div class="kc-section-head"><div><h2>Customer Reviews</h2><p>Real feedback from KEYCASE customers.</p></div></div><div id="customerReviews" class="grid"><div class="empty">Customer reviews loading…</div></div></section>
+
+<div id="bannerNotice" class="notice hidden"></div>
+
+
+
+
+
+
+
+
 <div class="toolbar"><input id="search" placeholder="Search cover or phone model…"><select id="brand"><option value="">All brands</option></select></div>
 <div class="section-head"><h2>Shop Covers</h2><small id="resultCount">Loading products…</small></div>
 <div id="products" class="grid"><div class="empty">Products लोड हो रहे हैं…</div></div>
@@ -154,7 +238,7 @@ async function loadProducts(){const {data,error}=await db.from('products').selec
 async function loadCustomerReviews(){const box=$('customerReviews');const {data,error}=await db.from('product_reviews').select('id,customer_name,rating,review_text,created_at').eq('status','approved').order('created_at',{ascending:false}).limit(8);if(error){box.innerHTML='<div class="empty">Customer reviews अभी उपलब्ध नहीं हैं।</div>';console.warn('Reviews load:',error.message);return}const rows=data||[];box.innerHTML=rows.length?rows.map(r=>`<article class="collection-card"><div class="collection-info"><div style="color:#b9955b;letter-spacing:2px">${'★'.repeat(Math.max(0,Math.min(5,Number(r.rating)||0)))}</div><strong>${esc(r.customer_name||'KEYCASE Customer')}</strong><small>${esc(r.review_text||'')}</small></div></article>`).join(''):'<div class="empty">अभी customer reviews प्रकाशित नहीं हुए हैं।</div>'}
 function renderCrystalClear(mode){const list=products.filter(p=>{const label=[p.section,p.category,p.name].join(' ').toLowerCase();const isCrystal=label.includes('crystal clear')||String(p.section||'').toLowerCase().includes('crystal');const magValue=String(p.magsafe_option||'').toLowerCase(),hasMag=magValue?(!magValue.includes('without')&&/with|magsafe|magnetic|true|yes/.test(magValue)):/with\s*mag|magsafe|magnetic|\bmag\b/.test(label);return isCrystal&&(mode==='with'?hasMag:!hasMag)});$('crystalClearProducts').innerHTML=list.length?list.map(productCard).join(''):'<div class="empty">इस विकल्प के products अभी उपलब्ध नहीं हैं। Admin Panel → Products में Section को “Crystal Clear” (Without Mag) या “Crystal Clear with Mag” चुनकर publish करें।</div>';}
 function renderBestSellers(){
- const list=products.filter(p=>p.is_featured===true).slice(0,8);
+ const featured=products.filter(p=>p.is_featured===true);\n const list=(featured.length?featured:products).slice(0,8);
  const section=$('bestSellersSection');if(!section)return;
  if(!list.length){section.classList.add('hidden');return;}
  section.classList.remove('hidden');$('bestSellers').innerHTML=list.map(productCard).join('');
