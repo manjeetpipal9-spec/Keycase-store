@@ -67,7 +67,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <div><label>Phone Brand</label><input id="pBrand" placeholder="Apple, Samsung, Vivo..."></div>
 <div><label>Category / Cover Type</label><input id="pCategory" placeholder="Crystal Clear, Designer..."></div>
 <div><label>Section</label><select id="pSection"><option>Crystal Clear</option><option>Crystal Clear with Mag</option><option>Designer</option><option>DIY</option><option>New Arrivals</option></select></div><div><label>Crystal Clear Type</label><select id="pMagSafe"><option value="">Not applicable</option><option value="without_mag">Without Mag</option><option value="with_mag">With Mag / MagSafe</option></select></div>
-<div><label>Compatible Phone Models (comma separated)</label><input id="pModels" placeholder="iPhone 16, iPhone 16 Pro"></div>
+<div><label>Compatible Phone Models (comma separated)</label><input id="pModels" placeholder="iPhone 16, iPhone 16 Pro"></div><div class="muted" style="grid-column:1/-1">Crystal Clear के लिए हर phone model और Mag option (With Mag / Without Mag) का अलग product record बनाएं। उदाहरण: Brand = Apple, Model = iPhone 16 Pro, Crystal Clear Type = Without Mag. इससे ग्राहक अपने exact model के अनुसार cover चुन पाएगा।</div>
 <div><label>Selling Price ₹ *</label><input id="pPrice" type="number" min="0" step=".01" required></div>
 <div><label>MRP ₹</label><input id="pMrp" type="number" min="0" step=".01"></div>
 <div><label>Stock Quantity</label><input id="pStock" type="number" min="0" value="0"></div>
@@ -107,7 +107,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 </section>
 
 <section id="tab-collections" class="panel">
-<div class="card"><h2 id="collectionHeading">Add Designer / New Arrivals Card</h2>
+<div class="card"><h2 id="collectionHeading">Add Designer / DIY / New Arrivals Collection Card</h2>
 <form id="collectionForm"><input type="hidden" id="collectionId"><input type="hidden" id="collectionOldImage">
 <div class="grid"><div><label>Section *</label><select id="colSection"><option value="designer">Designer</option><option value="diy">DIY</option><option value="new_arrivals">New Arrivals</option></select></div><div><label>Title *</label><input id="colTitle" required></div><div><label>Subtitle</label><input id="colSubtitle"></div><div><label>Image *</label><input id="colFile" type="file" accept="image/*"></div><div><label>Display Order</label><input id="colSort" type="number" value="0"></div></div>
 <div class="actions"><button>Save Collection Card</button><button type="button" class="secondary" id="clearCollection">Clear</button></div></form></div>
