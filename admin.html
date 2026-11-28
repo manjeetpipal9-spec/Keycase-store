@@ -62,7 +62,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <form id="productForm">
 <input type="hidden" id="productId">
 <div class="grid">
-<div><label>Product / Cover Name *</label><input id="pName" required></div>
+<div><label>Product / Cover Name *</label><input id="pName" required></div><div><label>Color Name *</label><input id="pColor" placeholder="Black, Blue, Pink..."></div><input type="hidden" id="pDesignGroup"><div><label>Main Design Photo</label><label style="display:flex;align-items:center;gap:8px;font-weight:500"><input id="pPrimary" type="checkbox" checked style="width:auto"> This is the main photo shown in New Arrivals</label></div>
 <div><label>SKU</label><input id="pSku"></div>
 <div><label>Phone Brand</label><input id="pBrand" placeholder="Apple, Samsung, Vivo..."></div>
 <div><label>Category / Cover Type</label><input id="pCategory" placeholder="Crystal Clear, Designer..."></div>
@@ -82,10 +82,10 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <label><input id="pFeatured" type="checkbox"> Featured</label>
 <label><input id="pNew" type="checkbox"> New Arrival</label>
 </div>
-<div class="actions"><button id="saveProductBtn">Save Product</button><button type="button" class="secondary" id="clearProduct">Clear</button></div>
+<div class="actions"><button id="saveProductBtn">Save Product</button><button type="button" class="secondary hidden" id="addColorVariant">＋ Add another color to this design</button><button type="button" class="secondary" id="clearProduct">Clear</button></div><p class="muted">हर रंग के लिए अलग फोटो और अलग product variant सेव होगा। पहले Main Design Photo सेव करें, फिर Edit खोलकर “Add another color” दबाएँ।</p>
 </form>
 </div>
-<div class="card"><h2>All Products</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Name / Brand</th><th>Section</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div></div>
+<div class="card"><h2>All Products</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Name / Color</th><th>Section</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead><tbody id="productsList"></tbody></table></div></div>
 </section>
 
 <section id="tab-categories" class="panel">
@@ -159,27 +159,27 @@ async function showApp(user){
  await Promise.all([loadProducts(),loadCategories(),loadBanners(),loadCollections(),loadOrders(),loadReviews()]);
 }
 function clearProduct(){
- $("productForm").reset();$("productId").value="";$("pStock").value=0;$("pSort").value=0;$("pActive").checked=true;
+ $("productForm").reset();$("productId").value="";$("pDesignGroup").value="";$("pStock").value=0;$("pSort").value=0;$("pActive").checked=true;$("pPrimary").checked=true;$("addColorVariant").classList.add("hidden");
  $("productHeading").textContent="Add Product";
 }
 async function loadProducts(){
  const {data,error}=await db.from("products").select("*").order("sort_order",{ascending:true});
  if(error){note("Products load error: "+error.message,"error");return;}
  products=data||[];
- $("productsList").innerHTML=products.map(p=>`<tr><td>${p.image_urls?.[0]?`<img class="thumb" src="${esc(p.image_urls[0])}">`:"—"}</td><td><b>${esc(p.name)}</b><div class="muted">${esc(p.brand||"")}</div></td><td>${esc(p.section||"")}</td><td>${money(p.price)}</td><td>${p.stock_quantity??p.stock??0}</td><td>${p.is_active??p.active?"Published":"Hidden"}</td><td><button class="secondary" data-pedit="${p.id}">Edit</button> <button class="danger" data-pdel="${p.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="7">No products yet.</td></tr>';
+ $("productsList").innerHTML=products.map(p=>`<tr><td>${p.image_urls?.[0]?`<img class="thumb" src="${esc(p.image_urls[0])}">`:"—"}</td><td><b>${esc(p.name)}</b><div class="muted">${esc(p.variant_color||"")}${p.design_group_id?(p.is_primary_variant?" · Main photo":" · Color variant"):""} · ${esc(p.brand||"")}</div></td><td>${esc(p.section||"")}</td><td>${money(p.price)}</td><td>${p.stock_quantity??p.stock??0}</td><td>${p.is_active??p.active?"Published":"Hidden"}</td><td><button class="secondary" data-pedit="${p.id}">Edit</button> <button class="danger" data-pdel="${p.id}">Delete</button></td></tr>`).join("")||'<tr><td colspan="7">No products yet.</td></tr>';
  $("productsList").querySelectorAll("[data-pedit]").forEach(b=>b.onclick=()=>editProduct(products.find(p=>String(p.id)===b.dataset.pedit)));
  $("productsList").querySelectorAll("[data-pdel]").forEach(b=>b.onclick=()=>deleteProduct(b.dataset.pdel));
 }
 function editProduct(p){
  if(!p)return;
- $("productId").value=p.id;$("pName").value=p.name||"";$("pSku").value=p.sku||"";
+ $("productId").value=p.id;$("pDesignGroup").value=p.design_group_id||"";$("pColor").value=p.variant_color||"";$("pPrimary").checked=p.is_primary_variant!==false;$("pName").value=p.name||"";$("pSku").value=p.sku||"";
  $("pBrand").value=p.brand||"";$("pCategory").value=p.category||"";$("pSection").value=p.section||"Crystal Clear";$("pMagSafe").value=p.magsafe_option||"";
  $("pModels").value=(p.compatible_models||p.mobile_models||[]).join(", ");$("pPrice").value=p.price??"";
  $("pMrp").value=p.mrp??"";$("pStock").value=p.stock_quantity??p.stock??0;$("pSort").value=p.sort_order??0;
  $("pDescription").value=p.description||"";$("pImageUrls").value=(p.image_urls||[]).join("\n");
  $("pVideo").value=p.video_url||"";$("pActive").checked=p.is_active??p.active??true;
  $("pFeatured").checked=!!p.is_featured;$("pNew").checked=!!p.is_new_arrival;
- $("productHeading").textContent="Edit Product";$("productCard").scrollIntoView({behavior:"smooth"});
+ $("productHeading").textContent="Edit Product";$("addColorVariant").classList.remove("hidden");$("productCard").scrollIntoView({behavior:"smooth"});
 }
 async function deleteProduct(id){
  if(!confirm("क्या यह product delete करना है?"))return;
@@ -195,8 +195,10 @@ $("productForm").onsubmit=async e=>{
   const models=$("pModels").value.split(",").map(x=>x.trim()).filter(Boolean);
   const stock=Math.max(0,Number($("pStock").value||0));
   const active=$("pActive").checked;
+  const groupId=$("pDesignGroup").value||crypto.randomUUID();
+  const colorName=$("pColor").value.trim();
   const payload={
-   name:$("pName").value.trim(),sku:$("pSku").value.trim()||null,brand:$("pBrand").value.trim()||null,
+   name:$("pName").value.trim(),design_group_id:groupId,variant_color:colorName||null,is_primary_variant:$("pPrimary").checked,sku:$("pSku").value.trim()||null,brand:$("pBrand").value.trim()||null,
    category:$("pCategory").value.trim()||null,section:$("pSection").value,magsafe_option:$("pMagSafe").value||null,
    model:models[0]||"Universal",compatible_models:models,mobile_models:models,price:Number($("pPrice").value),
    mrp:$("pMrp").value===""?null:Number($("pMrp").value),
@@ -207,14 +209,23 @@ $("productForm").onsubmit=async e=>{
    is_new_arrival:$("pNew").checked,updated_by:currentUser.id,updated_at:new Date().toISOString()
   };
   if(!payload.name||!Number.isFinite(payload.price)||payload.price<0)throw new Error("Product name और सही price भरें।");
+  if(!id&&!colorName)throw new Error("हर नई फोटो के लिए Color Name भरें।");
   const id=$("productId").value;
   const result=id?await db.from("products").update(payload).eq("id",id):await db.from("products").insert(payload);
   if(result.error)throw result.error;
-  clearProduct();$("pFiles").value="";note("Product save हो गया।","success");await loadProducts();
+  clearProduct();$("pFiles").value="";note("Product / color variant save हो गया।","success");await loadProducts();
  }catch(err){note(err.message||String(err),"error");}
  finally{btn.disabled=false;}
 };
 $("clearProduct").onclick=clearProduct;
+$("addColorVariant").onclick=async()=>{
+ const currentId=$("productId").value;if(!currentId){note("पहले Main Design Photo सेव करें, फिर Edit करके color जोड़ें।","error");return;}
+ let groupId=$("pDesignGroup").value;
+ if(!groupId){groupId=crypto.randomUUID();const {error}=await db.from("products").update({design_group_id:groupId,is_primary_variant:true}).eq("id",currentId);if(error){note("Design group update failed: "+error.message,"error");return;}$("pDesignGroup").value=groupId;}
+ const v={name:$("pName").value,brand:$("pBrand").value,category:$("pCategory").value,section:$("pSection").value,models:$("pModels").value,price:$("pPrice").value,mrp:$("pMrp").value,stock:$("pStock").value,description:$("pDescription").value};
+ $("productId").value="";$("pDesignGroup").value=groupId;$("pColor").value="";$("pPrimary").checked=false;$("pName").value=v.name;$("pBrand").value=v.brand;$("pCategory").value=v.category;$("pSection").value=v.section;$("pModels").value=v.models;$("pPrice").value=v.price;$("pMrp").value=v.mrp;$("pStock").value=v.stock;$("pDescription").value=v.description;$("pImageUrls").value="";$("pFiles").value="";$("pFeatured").checked=false;$("pNew").checked=false;
+ $("productHeading").textContent="Add Color Variant — "+v.name;$("addColorVariant").classList.add("hidden");$("productCard").scrollIntoView({behavior:"smooth"});
+};
 
 async function loadCategories(){
  const {data,error}=await db.from("product_categories").select("*").order("sort_order",{ascending:true});
