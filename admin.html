@@ -50,7 +50,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <button class="active" data-tab="products">Products</button>
 <button data-tab="categories">Categories</button>
 <button data-tab="banners">Homepage Slider</button>
-<button data-tab="collections">Designer / New Arrivals</button>
+<button data-tab="collections">Designer / DIY / New Arrivals</button>
 <button data-tab="orders">Orders</button>
 <button data-tab="reviews">Reviews</button>
 </div>
@@ -66,7 +66,7 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <div><label>SKU</label><input id="pSku"></div>
 <div><label>Phone Brand</label><input id="pBrand" placeholder="Apple, Samsung, Vivo..."></div>
 <div><label>Category / Cover Type</label><input id="pCategory" placeholder="Crystal Clear, Designer..."></div>
-<div><label>Section</label><select id="pSection"><option>Crystal Clear</option><option>Crystal Clear with Mag</option><option>Designer</option><option>New Arrivals</option></select></div>
+<div><label>Section</label><select id="pSection"><option>Crystal Clear</option><option>Crystal Clear with Mag</option><option>Designer</option><option>DIY</option><option>New Arrivals</option></select></div><div><label>Crystal Clear Type</label><select id="pMagSafe"><option value="">Not applicable</option><option value="without_mag">Without Mag</option><option value="with_mag">With Mag / MagSafe</option></select></div>
 <div><label>Compatible Phone Models (comma separated)</label><input id="pModels" placeholder="iPhone 16, iPhone 16 Pro"></div>
 <div><label>Selling Price ₹ *</label><input id="pPrice" type="number" min="0" step=".01" required></div>
 <div><label>MRP ₹</label><input id="pMrp" type="number" min="0" step=".01"></div>
@@ -109,9 +109,9 @@ th{color:#687083}.thumb{width:48px;height:48px;object-fit:cover;border-radius:8p
 <section id="tab-collections" class="panel">
 <div class="card"><h2 id="collectionHeading">Add Designer / New Arrivals Card</h2>
 <form id="collectionForm"><input type="hidden" id="collectionId"><input type="hidden" id="collectionOldImage">
-<div class="grid"><div><label>Section *</label><select id="colSection"><option value="designer">Designer</option><option value="new_arrivals">New Arrivals</option></select></div><div><label>Title *</label><input id="colTitle" required></div><div><label>Subtitle</label><input id="colSubtitle"></div><div><label>Image *</label><input id="colFile" type="file" accept="image/*"></div><div><label>Display Order</label><input id="colSort" type="number" value="0"></div></div>
+<div class="grid"><div><label>Section *</label><select id="colSection"><option value="designer">Designer</option><option value="diy">DIY</option><option value="new_arrivals">New Arrivals</option></select></div><div><label>Title *</label><input id="colTitle" required></div><div><label>Subtitle</label><input id="colSubtitle"></div><div><label>Image *</label><input id="colFile" type="file" accept="image/*"></div><div><label>Display Order</label><input id="colSort" type="number" value="0"></div></div>
 <div class="actions"><button>Save Collection Card</button><button type="button" class="secondary" id="clearCollection">Clear</button></div></form></div>
-<div class="card"><h2>Designer & New Arrivals Images</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Section</th><th>Title</th><th>Order</th><th>Actions</th></tr></thead><tbody id="collectionsList"></tbody></table></div></div>
+<div class="card"><h2>Designer, DIY & New Arrivals Images</h2><div class="tablewrap"><table><thead><tr><th>Image</th><th>Section</th><th>Title</th><th>Order</th><th>Actions</th></tr></thead><tbody id="collectionsList"></tbody></table></div></div>
 </section>
 
 <section id="tab-orders" class="panel">
@@ -173,7 +173,7 @@ async function loadProducts(){
 function editProduct(p){
  if(!p)return;
  $("productId").value=p.id;$("pName").value=p.name||"";$("pSku").value=p.sku||"";
- $("pBrand").value=p.brand||"";$("pCategory").value=p.category||"";$("pSection").value=p.section||"Crystal Clear";
+ $("pBrand").value=p.brand||"";$("pCategory").value=p.category||"";$("pSection").value=p.section||"Crystal Clear";$("pMagSafe").value=p.magsafe_option||"";
  $("pModels").value=(p.compatible_models||p.mobile_models||[]).join(", ");$("pPrice").value=p.price??"";
  $("pMrp").value=p.mrp??"";$("pStock").value=p.stock_quantity??p.stock??0;$("pSort").value=p.sort_order??0;
  $("pDescription").value=p.description||"";$("pImageUrls").value=(p.image_urls||[]).join("\n");
@@ -197,7 +197,7 @@ $("productForm").onsubmit=async e=>{
   const active=$("pActive").checked;
   const payload={
    name:$("pName").value.trim(),sku:$("pSku").value.trim()||null,brand:$("pBrand").value.trim()||null,
-   category:$("pCategory").value.trim()||null,section:$("pSection").value,
+   category:$("pCategory").value.trim()||null,section:$("pSection").value,magsafe_option:$("pMagSafe").value||null,
    model:models[0]||"Universal",compatible_models:models,mobile_models:models,price:Number($("pPrice").value),
    mrp:$("pMrp").value===""?null:Number($("pMrp").value),
    stock_quantity:stock,stock:stock,sort_order:Number($("pSort").value||0),
